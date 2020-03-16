@@ -1,0 +1,9 @@
+/* .check-6 {
+  float: right;
+}
+.check-5 {
+  float: left;
+} */
+.float-right {
+  display: right;
+}

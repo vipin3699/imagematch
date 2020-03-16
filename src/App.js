@@ -1,26 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import React from "react";
+import "@patternfly/react-core/dist/styles/base.css";
+import { Route, Switch, BrowserRouter } from "react-router-dom";
+import AppPage from "./components/page";
+import Versions from "./components/Versions";
+import Products from "./components/Products";
+import Locales from "./components/Locales";
+import Screenshots from "./components/Screenshots";
+class PageLayoutSimpleNav extends React.Component {
+  render() {
+    return (
+      <AppPage>
+        <BrowserRouter>
+          <Switch>
+            <Route
+              path="/products/:productid/versions/:versionid/locales/:localeid/screenshots"
+              component={Screenshots}
+            ></Route>
+            <Route
+              path="/products/:productid/versions/:versionid/locales"
+              component={Locales}
+            ></Route>
+            <Route exact path="/products" component={Products}></Route>
+            <Route
+              path="/products/:productid/versions"
+              component={Versions}
+            ></Route>
+          </Switch>
+        </BrowserRouter>
+      </AppPage>
+    );
+  }
 }
 
-export default App;
+export default PageLayoutSimpleNav;
