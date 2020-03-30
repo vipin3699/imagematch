@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "@patternfly/react-core/dist/styles/base.css";
+import PropTypes from "prop-types";
+import { Button } from "@patternfly/react-core";
 class Versions extends Component {
   constructor(props) {
     super(props);
@@ -11,20 +13,30 @@ class Versions extends Component {
       selectVersions: "",
       selectLocales: ""
     };
+
     this.handleDropdownChangeVersion = this.handleDropdownChangeVersion.bind(
       this
     );
     this.handleDropdownChangeLocale = this.handleDropdownChangeLocale.bind(
       this
     );
-    this.handleSubmit = this.onSubmit.bind(this);
   }
+  handleChange = e => {
+    var value = this.state.locales.filter(function(item) {
+      return item.key == e.target.value;
+    });
+    console.log(e.target.value);
+  };
   handleDropdownChangeVersion(e) {
     this.setState({ selectVersions: e.target.value });
   }
   handleDropdownChangeLocale(e) {
     this.setState({ selectLocales: e.target.value });
   }
+
+  static contextTypes = {
+    router: PropTypes.object
+  };
 
   onSubmit = e => {
     this.props.history.push({
@@ -55,36 +67,50 @@ class Versions extends Component {
   }
 
   render() {
-    let product_versions = this.state.product_versions;
-    let optionItems = product_versions.map(product_versions => (
-      <option key={product_versions.id}>{product_versions.id}</option>
-    ));
-
-    let locales = this.state.locales;
-    let optionItems1 = locales.map(locales => (
-      <option key={locales.id}>{locales.id}</option>
-    ));
-
     return (
       <div>
-        <div align="left">
+        <div>
           Select a Version
-          <select onChange={this.handleDropdownChangeVersion}>
-            {optionItems}
+          <select
+            style={{ width: "150px" }}
+            onChange={(this.handleChange, this.handleDropdownChangeVersion)}
+          >
+            <option>Select</option>
+            {this.state.product_versions.map(function(data, key) {
+              return (
+                <option key={data.name} value={data.id}>
+                  {data.name}
+                </option>
+              );
+            })}
           </select>
         </div>
-        <div align="right ">
-          Selected value is : {this.state.selectVersions}
+        <div>
+          Select a Locale
+          <select
+            style={{ width: "150px", margin: "20px 0 0 0" }}
+            onChange={(this.handleChange, this.handleDropdownChangeLocale)}
+          >
+            <option>Select</option>
+            {this.state.locales.map(function(data, key) {
+              return (
+                <option key={data.language} value={data.id}>
+                  {data.language}
+                </option>
+              );
+            })}
+          </select>
         </div>
 
-        <div align="left">
-          Select a Locale
-          <select onChange={this.handleDropdownChangeLocale}>
-            {optionItems1}
-          </select>
+        <div class="submit_button" style={{ margin: "20px 0 0 0" }}>
+          <Button
+            href="https://pf-next.com/"
+            variant="primary"
+            onClick={this.onSubmit}
+          >
+            Submit
+          </Button>
         </div>
-        <div align="right ">Selected value is : {this.state.selectLocales}</div>
-        <button onClick={this.onSubmit}>Send</button>
       </div>
     );
   }
