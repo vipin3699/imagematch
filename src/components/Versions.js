@@ -3,6 +3,7 @@ import axios from "axios";
 import "@patternfly/react-core/dist/styles/base.css";
 import PropTypes from "prop-types";
 import { Button } from "@patternfly/react-core";
+import AppPage from "./page";
 class Versions extends Component {
   constructor(props) {
     super(props);
@@ -68,50 +69,52 @@ class Versions extends Component {
 
   render() {
     return (
-      <div>
+      <AppPage>
         <div>
-          Select a Version
-          <select
-            style={{ width: "150px" }}
-            onChange={(this.handleChange, this.handleDropdownChangeVersion)}
-          >
-            <option>Select</option>
-            {this.state.product_versions.map(function(data, key) {
-              return (
-                <option key={data.name} value={data.id}>
-                  {data.name}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-        <div>
-          Select a Locale
-          <select
-            style={{ width: "150px", margin: "20px 0 0 0" }}
-            onChange={(this.handleChange, this.handleDropdownChangeLocale)}
-          >
-            <option>Select</option>
-            {this.state.locales.map(function(data, key) {
-              return (
-                <option key={data.language} value={data.id}>
-                  {data.language}
-                </option>
-              );
-            })}
-          </select>
-        </div>
+          <div>
+            Select a Version
+            <select
+              style={{ width: "150px" }}
+              onChange={(this.handleChange, this.handleDropdownChangeVersion)}
+            >
+              <option>Select</option>
+              {this.state.product_versions.map(function(data, key) {
+                return (
+                  <option key={data.name} value={data.id}>
+                    {data.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          <div>
+            Select a Locale
+            <select
+              style={{ width: "150px", margin: "20px 0 0 0" }}
+              onChange={(this.handleChange, this.handleDropdownChangeLocale)}
+            >
+              <option>Select</option>
+              {this.state.locales.map(function(data, key) {
+                return (
+                  <option key={data.language} value={data.id}>
+                    {data.language}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
 
-        <div class="submit_button" style={{ margin: "20px 0 0 0" }}>
-          <Button
-            href="https://pf-next.com/"
-            variant="primary"
-            onClick={this.onSubmit}
-          >
-            Submit
-          </Button>
+          <div class="submit_button" style={{ margin: "20px 0 0 0" }}>
+            <Button
+              href="https://pf-next.com/"
+              variant="primary"
+              onClick={this.onSubmit}
+            >
+              Submit
+            </Button>
+          </div>
         </div>
-      </div>
+      </AppPage>
     );
   }
 }
