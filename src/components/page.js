@@ -1,19 +1,13 @@
 import React from "react";
 import {
-  Nav,
-  NavItem,
-  NavList,
-  NavVariants,
   Page,
   PageSection,
   PageSectionVariants,
-  PageSidebar,
   SkipToContent,
   TextContent,
   Text
 } from "@patternfly/react-core";
 import AppHeader from "./header";
-import axios from "axios";
 
 class AppPage extends React.Component {
   constructor(props) {
@@ -29,7 +23,6 @@ class AppPage extends React.Component {
     });
   };
   render() {
-    const { activeItem } = this.state;
     const { children } = this.props;
 
     //   const PageNav = (
@@ -67,7 +60,6 @@ class AppPage extends React.Component {
         isManagedSidebar
         skipToContent={PageSkipToContent}
         mainContainerId={pageId}
-        className="myPageClass"
       >
         <PageSection variant={PageSectionVariants.light}>
           <TextContent>
@@ -78,7 +70,7 @@ class AppPage extends React.Component {
             </Text>
           </TextContent>
         </PageSection>
-        <PageSection>{children}</PageSection>
+        <PageSection isFilled>{children}</PageSection>
       </Page>
     );
   }

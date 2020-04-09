@@ -11,3 +11,19 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.pf-c-page {
+  min-height: 100vh;
+}
+
+.product-card .product-image {
+  display: block;
+  margin: auto;
+  max-height: 120px;
+}
+.product-card .product-title {
+  margin: 10px 0 0;
+  font-weight: 600;
+}
+.grid-hover-zoom:hover {
+  transform: scale(1.5);
+}

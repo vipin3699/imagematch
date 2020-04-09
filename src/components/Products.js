@@ -1,70 +1,58 @@
 import React, { Component } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import ansible from "./logo/ansible.png";
-import rhel from "./logo/rhel.png";
 import AppPage from "./page";
+import { BASE_URL } from "./API/api";
 import {
-  Gallery,
-  GalleryItem,
   CardBody,
   Card,
-  Button,
+  Text,
+  TextContent,
+  TextVariants,
   CardFooter,
-  GutterSize,
-  CardHead
+  CardHeader,
+  Grid,
 } from "@patternfly/react-core";
 class Products extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      product1: {},
-      product2: {},
-      locales: {}
+      products: [],
     };
   }
 
   componentDidMount() {
-    axios
-      .all([
-        axios.get("http://localhost:3001/api/v1/products/1"),
-        axios.get("http://localhost:3001/api/v1/products/2"),
-        axios.get("http://localhost:3001/api/v1/locales")
-      ])
-      .then(([product1, product2, locales]) =>
-        this.setState({
-          product1: product1.data,
-          product2: product2.data,
-          locales: locales.data
-        })
-      );
+    axios.get(`${BASE_URL}/products`).then((products) => {
+      this.setState({
+        products: products.data,
+      });
+    });
   }
   render() {
-    // return this.state.product1.map(product1 => {
     return (
       <AppPage>
-        <Gallery gutter="lg">
-          <Card isHoverable>
-            <CardHead>
-              <img src={rhel}></img>
-            </CardHead>
-            <CardBody>
-              <Link to={`/products/${this.state.product1.id}/product_versions`}>
-                {this.state.product1.name}
-              </Link>
-            </CardBody>
-          </Card>
-          <Card isHoverable>
-            <CardHead>
-              <img src={ansible}></img>
-            </CardHead>
-            <CardBody>
-              <Link to={`/products/${this.state.product2.id}/product_versions`}>
-                {this.state.product2.name}
-              </Link>
-            </CardBody>
-          </Card>
-        </Gallery>
+        <Grid gutter="lg" span="4">
+          {this.state.products.map((products) => {
+            return (
+              <Card className="product-card" isHoverable>
+                <CardHeader></CardHeader>
+                <CardBody>
+                  <Link to={`/products/${products.id}/product_versions`}>
+                    <TextContent>
+                      <Text
+                        className="product-title"
+                        component={TextVariants.h3}
+                      >
+                        {products.name}
+                      </Text>
+                    </TextContent>
+                  </Link>
+                </CardBody>
+                <CardFooter></CardFooter>
+              </Card>
+            );
+          })}
+        </Grid>
       </AppPage>
     );
   }

@@ -3,9 +3,6 @@ import { Brand, PageHeader } from "@patternfly/react-core";
 import AppToolbar from "./toolbar";
 
 class AppHeader extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (

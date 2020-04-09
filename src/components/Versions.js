@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import axios from "axios";
 import "@patternfly/react-core/dist/styles/base.css";
 import PropTypes from "prop-types";
-import { Button } from "@patternfly/react-core";
+import { BASE_URL } from "./API/api";
+import {
+  Button,
+  DataToolbarContent,
+  DataToolbarItem,
+  DataToolbar,
+} from "@patternfly/react-core";
 import AppPage from "./page";
 class Versions extends Component {
   constructor(props) {
@@ -12,7 +18,7 @@ class Versions extends Component {
       locales: [],
       previousProductID: "",
       selectVersions: "",
-      selectLocales: ""
+      selectLocales: "",
     };
 
     this.handleDropdownChangeVersion = this.handleDropdownChangeVersion.bind(
@@ -22,9 +28,9 @@ class Versions extends Component {
       this
     );
   }
-  handleChange = e => {
-    var value = this.state.locales.filter(function(item) {
-      return item.key == e.target.value;
+  handleChange = (e) => {
+    var value = this.state.locales.filter(function (item) {
+      return item.key === e.target.value;
     });
     console.log(e.target.value);
   };
@@ -36,16 +42,16 @@ class Versions extends Component {
   }
 
   static contextTypes = {
-    router: PropTypes.object
+    router: PropTypes.object,
   };
 
-  onSubmit = e => {
+  onSubmit = (e) => {
     this.props.history.push({
       pathname: "/screenshots",
       state: {
         product_version_id: this.state.selectVersions,
-        locale_id: this.state.selectLocales
-      }
+        locale_id: this.state.selectLocales,
+      },
     });
   };
 
@@ -54,66 +60,73 @@ class Versions extends Component {
     axios
       .all([
         axios.get(
-          `http://localhost:3001/api/v1/products/${this.state.previousProductID}/product_versions`
+          `${BASE_URL}/products/${this.state.previousProductID}/product_versions`
         ),
-        axios.get("http://localhost:3001/api/v1/locales")
+        axios.get("http://localhost:3001/api/v1/locales"),
       ])
       .then(([product_versions, locales]) =>
         this.setState({
           product_versions: product_versions.data,
-          locales: locales.data
+          locales: locales.data,
         })
       )
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   render() {
     return (
       <AppPage>
-        <div>
-          <div>
-            Select a Version
-            <select
-              style={{ width: "150px" }}
-              onChange={(this.handleChange, this.handleDropdownChangeVersion)}
-            >
-              <option>Select</option>
-              {this.state.product_versions.map(function(data, key) {
-                return (
-                  <option key={data.name} value={data.id}>
-                    {data.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div>
-            Select a Locale
-            <select
-              style={{ width: "150px", margin: "20px 0 0 0" }}
-              onChange={(this.handleChange, this.handleDropdownChangeLocale)}
-            >
-              <option>Select</option>
-              {this.state.locales.map(function(data, key) {
-                return (
-                  <option key={data.language} value={data.id}>
-                    {data.language}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-
-          <div class="submit_button" style={{ margin: "20px 0 0 0" }}>
-            <Button
-              href="https://pf-next.com/"
-              variant="primary"
-              onClick={this.onSubmit}
-            >
-              Submit
-            </Button>
-          </div>
-        </div>
+        <DataToolbar variant="label" id="data-toolbar-group-types">
+          <DataToolbarContent>
+            <DataToolbarItem variant="label" id="version">
+              Select a Version
+            </DataToolbarItem>
+            <DataToolbarItem>
+              <select
+                class="pf-c-form-control"
+                id="version"
+                name="version"
+                onChange={(this.handleChange, this.handleDropdownChangeVersion)}
+                ariaLabelledBy="version"
+              >
+                <option>Select</option>
+                {this.state.product_versions.map(function (data, key) {
+                  return (
+                    <option key={data.name} value={data.id}>
+                      {data.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </DataToolbarItem>
+            <DataToolbarItem variant="label" id="locale">
+              Select a Locale
+            </DataToolbarItem>
+            <DataToolbarItem>
+              <select
+                class="pf-c-form-control"
+                id="locale"
+                name="locale"
+                onChange={(this.handleChange, this.handleDropdownChangeLocale)}
+                ariaLabelledBy="locale"
+              >
+                <option>Select</option>
+                {this.state.locales.map(function (data, key) {
+                  return (
+                    <option key={data.language} value={data.id}>
+                      {data.language}
+                    </option>
+                  );
+                })}
+              </select>
+            </DataToolbarItem>
+            <DataToolbarItem>
+              <Button variant="primary" onClick={this.onSubmit}>
+                Submit
+              </Button>
+            </DataToolbarItem>
+          </DataToolbarContent>
+        </DataToolbar>
       </AppPage>
     );
   }
