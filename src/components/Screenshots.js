@@ -1,20 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
-import Versions from "./Versions";
 import AppPage from "./page";
-
-import {
-  Brand,
-  Button,
-  Card,
-  CardActions,
-  CardHead,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Gallery
-} from "@patternfly/react-core";
 import { Split, SplitItem } from "@patternfly/react-core";
+import { TextContent } from "@patternfly/react-core";
+import { BASE_URL } from "./API/api";
+import ReactPaginate from "react-paginate";
 
 class Screenshots extends Component {
   constructor(props) {
@@ -22,75 +12,120 @@ class Screenshots extends Component {
     this.state = {
       pass: 0,
       fail: 0,
+      screenshots_en: [],
       screenshots: [],
-      disabled: false
+      offset: 0,
+      elements: [],
+      perPage: 10,
+      currentPage: 0,
+      elements_right: [],
+      elements_left: [],
     };
     this.setState({
-      product_version_id: this.props.location.state.product_version_id
+      product_version_id: this.props.location.state.product_version_id,
+      locale_id: this.props.location.state.locale_id,
     });
-    this.setState({ locale_id: this.props.location.state.locale_id });
   }
 
-  // passcount() {
-  //   this.setState({
-  //     pass: this.state.pass + 1
-  //   });
-  // }
-
-  // failcount() {
-  //   this.setState({
-  //     fail: this.state.fail + 1
-  //   });
-  // }
   componentDidMount() {
-    // this.state.selectVersions = this.props.selectVersions;
-    // this.state.selectLocales = this.props.selectLocales;
-    // let vid = this.state.product_version_id;
-    // let lid = this.state.locale_id;
     axios
-      .get(`http://localhost:3001/api/v1/screenshots`, {
-        params: {
-          // product_version_id: 4,
-          // locale_id: 1
-          product_version_id: this.props.location.state.product_version_id,
-          locale_id: this.props.location.state.locale_id
-        }
-      })
-      .then(screenshots => {
-        this.setState({ screenshots: screenshots.data });
-      })
-      .catch(error => console.log(error));
-  }
+      .all([
+        axios.get(`${BASE_URL}/screenshots`, {
+          params: {
+            product_version_id: this.props.location.state.product_version_id,
+            locale_id: this.props.location.state.locale_id,
+          },
+        }),
+        axios.get(`${BASE_URL}/screenshots`, {
+          params: {
+            product_version_id: this.props.location.state.product_version_id,
+            locale_id: 3,
+          },
+        }),
+      ])
 
+      .then(([screenshots, screenshots_en]) =>
+        this.setState(
+          {
+            screenshots: screenshots.data,
+            screenshots_en: screenshots_en.data,
+            pageCount_right: Math.ceil(
+              screenshots_en.data[0].Images.length / this.state.perPage
+            ),
+            pageCount_left: Math.ceil(
+              screenshots.data[0].Images.length / this.state.perPage
+            ),
+          },
+          () => this.setElementsForCurrentPage()
+        )
+      )
+      .catch((error) => console.log(error));
+  }
+  setElementsForCurrentPage() {
+    console.log(this.state);
+    let elements_right = this.state.screenshots_en[0].Images.slice(
+      this.state.offset,
+      this.state.offset + this.state.perPage
+    );
+    let elements_left = this.state.screenshots[0].Images.slice(
+      this.state.offset,
+      this.state.offset + this.state.perPage
+    );
+    this.setState({ elements_right: elements_right });
+    this.setState({ elements_left: elements_left });
+  }
+  handlePageClick = (screenshots) => {
+    const selectedPage = screenshots.selected;
+    const offset = selectedPage * this.state.perPage;
+    this.setState({ currentPage: selectedPage, offset: offset }, () => {
+      this.setElementsForCurrentPage();
+    });
+  };
   render() {
+    let paginationElement;
+    if (this.state.pageCount_right > 1 || this.state.pageCount_left > 1) {
+      paginationElement = (
+        <ReactPaginate
+          previousLabel={"← Previous"}
+          nextLabel={"Next →"}
+          breakLabel={<span className="gap">...</span>}
+          pageCount_right={this.state.pageCount_right}
+          pageCount_left={this.state.pageCount_left}
+          onPageChange={this.handlePageClick}
+          forcePage={this.state.currentPage}
+          containerClassName={"pagination"}
+          previousLinkClassName={"previous_page"}
+          nextLinkClassName={"next_page"}
+          disabledClassName={"disabled"}
+          activeClassName={"active"}
+        />
+      );
+    }
     return (
       <AppPage>
-        <Gallery gutter="lg">
-          {this.state.screenshots.map(screenshots => {
-            return (
-              <Card>
-                <CardHeader>{screenshots.name}</CardHeader>
-                <div style={{ height: "530px", width: "750px" }}>
-                  {screenshots.Images.map(image => {
-                    return (
-                      <div className="float-right">
-                        <img src={image}></img>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Card>
-            );
-          })}
-        </Gallery>
+        <>
+          <TextContent>
+            {/* <Text component={TextVariants.h1}>{screenshots.name}</Text> */}
+          </TextContent>
+          <div>
+            {paginationElement}
+            <Split gutter="md">
+              <SplitItem>
+                {this.state.elements_right.map((image) => {
+                  return <img src={image}></img>;
+                })}
+              </SplitItem>
+              <SplitItem>
+                {this.state.elements_left.map((image) => {
+                  return <img src={image}></img>;
+                })}
+              </SplitItem>
+            </Split>
+          </div>
+        </>
       </AppPage>
     );
   }
 }
 
 export default Screenshots;
-
-/* <div>
-                          <button onClick={e => this.passcount(e)}>Pass</button>
-                          <button onClick={e => this.failcount(e)}>Fail</button>
-                        </div> */
