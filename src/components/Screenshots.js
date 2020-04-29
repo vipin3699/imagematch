@@ -4,8 +4,7 @@ import AppPage from "./page";
 import { Split, SplitItem } from "@patternfly/react-core";
 import { TextContent } from "@patternfly/react-core";
 import { BASE_URL } from "./API/api";
-import ReactPaginate from "react-paginate";
-
+import { Pagination, PaginationVariant } from "@patternfly/react-core";
 class Screenshots extends Component {
   constructor(props) {
     super(props);
@@ -16,17 +15,82 @@ class Screenshots extends Component {
       screenshots: [],
       offset: 0,
       elements: [],
-      perPage: 10,
       currentPage: 0,
       elements_right: [],
       elements_left: [],
+      page: 1,
+      perPage: 10,
     };
-    this.setState({
-      product_version_id: this.props.location.state.product_version_id,
-      locale_id: this.props.location.state.locale_id,
-    });
-  }
+    // Pagination functions
+    //Set the Page
+    this.onSetPage = (_event, pageNumber) => {
+      this.setState(
+        {
+          page: pageNumber,
+        },
+        () => this.SetImages(this.state.offset, this.state.perPage)
+      );
+    };
+    //Items to be displayed per page
+    this.onPerPageSelect = (_event, perPage) => {
+      console.log("onPerPageSelect : " + perPage);
+      this.setState(
+        {
+          perPage: perPage,
+        },
+        () => this.SetImages(this.state.offset, perPage)
+      );
+    };
+    //Next set of Items
+    this.onNextClick = () => {
+      this.setState(
+        {
+          offset: this.state.page * this.state.perPage,
+        },
+        function () {
+          console.log("onNextClick  offset:" + this.state.offset);
+        }
+      );
+    };
+    //Previous set of items
+    this.onPreviousClick = (_event, page) => {
+      this.setState(
+        {
+          offset: (this.state.page - 2) * this.state.perPage,
+        },
+        function () {
+          console.log("onPreviousClick  offset:" + this.state.offset);
+        }
+      );
+    };
+    //First set of Items
+    this.onFirstClick = (_event, page) => {
+      console.log("onFirstClick:" + page);
 
+      this.setState(
+        {
+          offset: 0,
+        },
+        function () {
+          console.log("onFirstClick offset:" + this.state.offset);
+        }
+      );
+    };
+    //Last set of items
+    this.onLastClick = (_event, page) => {
+      console.log("onLastClick :" + page);
+
+      this.setState(
+        {
+          offset: this.state.itemCount - this.state.perPage,
+        },
+        function () {
+          console.log("onLastClick  offset:" + this.state.offset);
+        }
+      );
+    };
+    // Pagination functions end
+  }
   componentDidMount() {
     axios
       .all([
@@ -49,79 +113,56 @@ class Screenshots extends Component {
           {
             screenshots: screenshots.data,
             screenshots_en: screenshots_en.data,
-            pageCount_right: Math.ceil(
-              screenshots_en.data[0].Images.length / this.state.perPage
-            ),
-            pageCount_left: Math.ceil(
-              screenshots.data[0].Images.length / this.state.perPage
-            ),
+            itemCount: Math.ceil(screenshots_en.data[0].Images.length),
           },
-          () => this.setElementsForCurrentPage()
+          () => this.SetImages(this.state.offset, this.state.perPage)
         )
       )
       .catch((error) => console.log(error));
   }
-  setElementsForCurrentPage() {
-    console.log(this.state);
+
+  SetImages(offset, perPage) {
     let elements_right = this.state.screenshots_en[0].Images.slice(
-      this.state.offset,
-      this.state.offset + this.state.perPage
+      offset,
+      offset + perPage
     );
     let elements_left = this.state.screenshots[0].Images.slice(
-      this.state.offset,
-      this.state.offset + this.state.perPage
+      offset,
+      offset + perPage
     );
     this.setState({ elements_right: elements_right });
     this.setState({ elements_left: elements_left });
   }
-  handlePageClick = (screenshots) => {
-    const selectedPage = screenshots.selected;
-    const offset = selectedPage * this.state.perPage;
-    this.setState({ currentPage: selectedPage, offset: offset }, () => {
-      this.setElementsForCurrentPage();
-    });
-  };
+
   render() {
-    let paginationElement;
-    if (this.state.pageCount_right > 1 || this.state.pageCount_left > 1) {
-      paginationElement = (
-        <ReactPaginate
-          previousLabel={"← Previous"}
-          nextLabel={"Next →"}
-          breakLabel={<span className="gap">...</span>}
-          pageCount_right={this.state.pageCount_right}
-          pageCount_left={this.state.pageCount_left}
-          onPageChange={this.handlePageClick}
-          forcePage={this.state.currentPage}
-          containerClassName={"pagination"}
-          previousLinkClassName={"previous_page"}
-          nextLinkClassName={"next_page"}
-          disabledClassName={"disabled"}
-          activeClassName={"active"}
-        />
-      );
-    }
     return (
       <AppPage>
         <>
-          <TextContent>
-            {/* <Text component={TextVariants.h1}>{screenshots.name}</Text> */}
-          </TextContent>
-          <div>
-            {paginationElement}
-            <Split gutter="md">
-              <SplitItem>
-                {this.state.elements_right.map((image) => {
-                  return <img src={image}></img>;
-                })}
-              </SplitItem>
-              <SplitItem>
-                {this.state.elements_left.map((image) => {
-                  return <img src={image}></img>;
-                })}
-              </SplitItem>
-            </Split>
-          </div>
+          <Pagination
+            itemCount={this.state.itemCount}
+            widgetId="pagination-options-menu-bottom"
+            perPage={this.state.perPage}
+            page={this.state.page}
+            variant={PaginationVariant.bottom}
+            onSetPage={this.onSetPage}
+            onPerPageSelect={this.onPerPageSelect}
+            onNextClick={this.onNextClick}
+            onPreviousClick={this.onPreviousClick}
+            onFirstClick={this.onFirstClick}
+            onLastClick={this.onLastClick}
+          />
+          <Split gutter="md">
+            <SplitItem>
+              {this.state.elements_right.map((image) => {
+                return <img src={image}></img>;
+              })}
+            </SplitItem>
+            <SplitItem>
+              {this.state.elements_left.map((image) => {
+                return <img src={image}></img>;
+              })}
+            </SplitItem>
+          </Split>
         </>
       </AppPage>
     );
