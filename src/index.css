@@ -27,3 +27,8 @@ code {
 .grid-hover-zoom:hover {
   transform: scale(1.5);
 }
+.pf-c-data-toolbar {
+  top: -23px;
+  width: 105%;
+  left: -2%;
+}

@@ -31,13 +31,13 @@ class Products extends Component {
   render() {
     return (
       <AppPage>
-        <Grid gutter="lg" span="4">
+        <Grid gutter="lg" sm={6} md={3}>
           {this.state.products.map((products) => {
             return (
               <Card className="product-card" isHoverable>
                 <CardHeader></CardHeader>
                 <CardBody>
-                  <Link to={`/products/${products.id}/product_versions`}>
+                  <Link to={`/products/${products.id}/screenshots`}>
                     <TextContent>
                       <Text
                         className="product-title"

@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import AppPage from "./page";
 import { Split, SplitItem } from "@patternfly/react-core";
-import { TextContent } from "@patternfly/react-core";
 import { BASE_URL } from "./API/api";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
+import SimpleEmptyState from "./SimpleEmptyState";
 class Screenshots extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +32,6 @@ class Screenshots extends Component {
     };
     //Items to be displayed per page
     this.onPerPageSelect = (_event, perPage) => {
-      console.log("onPerPageSelect : " + perPage);
       this.setState(
         {
           perPage: perPage,
@@ -43,51 +41,31 @@ class Screenshots extends Component {
     };
     //Next set of Items
     this.onNextClick = () => {
-      this.setState(
-        {
-          offset: this.state.page * this.state.perPage,
-        },
-        function () {
-          console.log("onNextClick  offset:" + this.state.offset);
-        }
-      );
+      this.setState({
+        offset: this.state.page * this.state.perPage,
+      });
     };
     //Previous set of items
     this.onPreviousClick = (_event, page) => {
-      this.setState(
-        {
-          offset: (this.state.page - 2) * this.state.perPage,
-        },
-        function () {
-          console.log("onPreviousClick  offset:" + this.state.offset);
-        }
-      );
+      this.setState({
+        offset: (this.state.page - 2) * this.state.perPage,
+      });
     };
     //First set of Items
     this.onFirstClick = (_event, page) => {
       console.log("onFirstClick:" + page);
 
-      this.setState(
-        {
-          offset: 0,
-        },
-        function () {
-          console.log("onFirstClick offset:" + this.state.offset);
-        }
-      );
+      this.setState({
+        offset: 0,
+      });
     };
     //Last set of items
     this.onLastClick = (_event, page) => {
       console.log("onLastClick :" + page);
 
-      this.setState(
-        {
-          offset: this.state.itemCount - this.state.perPage,
-        },
-        function () {
-          console.log("onLastClick  offset:" + this.state.offset);
-        }
-      );
+      this.setState({
+        offset: this.state.itemCount - this.state.perPage,
+      });
     };
     // Pagination functions end
   }
@@ -96,13 +74,16 @@ class Screenshots extends Component {
       .all([
         axios.get(`${BASE_URL}/screenshots`, {
           params: {
-            product_version_id: this.props.location.state.product_version_id,
-            locale_id: this.props.location.state.locale_id,
+            // product_version_id: this.props.location.state.product_version_id,
+            // locale_id: this.props.location.state.locale_id,
+            product_version_id: this.props.product_version_id,
+            locale_id: this.props.locale_id,
           },
         }),
         axios.get(`${BASE_URL}/screenshots`, {
           params: {
-            product_version_id: this.props.location.state.product_version_id,
+            // product_version_id: this.props.location.state.product_version_id,
+            product_version_id: this.props.product_version_id,
             locale_id: 3,
           },
         }),
@@ -130,14 +111,20 @@ class Screenshots extends Component {
       offset,
       offset + perPage
     );
-    this.setState({ elements_right: elements_right });
-    this.setState({ elements_left: elements_left });
+    this.setState({ elements_right: elements_right }, function () {
+      console.log("left images:" + this.state.elements_left.length);
+    });
+    this.setState({ elements_left: elements_left }, function () {
+      console.log("right images:" + this.state.elements_right.length);
+    });
   }
 
   render() {
-    return (
-      <AppPage>
-        <>
+    if (this.state.screenshots_en.length === 0) {
+      return <SimpleEmptyState />;
+    } else {
+      return (
+        <div>
           <Pagination
             itemCount={this.state.itemCount}
             widgetId="pagination-options-menu-bottom"
@@ -151,21 +138,36 @@ class Screenshots extends Component {
             onFirstClick={this.onFirstClick}
             onLastClick={this.onLastClick}
           />
+
           <Split gutter="md">
             <SplitItem>
               {this.state.elements_right.map((image) => {
-                return <img src={image}></img>;
+                return <img src={image} alt="" />;
               })}
             </SplitItem>
             <SplitItem>
               {this.state.elements_left.map((image) => {
-                return <img src={image}></img>;
+                return <img src={image} alt="" />;
               })}
             </SplitItem>
           </Split>
-        </>
-      </AppPage>
-    );
+
+          <Pagination
+            itemCount={this.state.itemCount}
+            widgetId="pagination-options-menu-bottom"
+            perPage={this.state.perPage}
+            page={this.state.page}
+            variant={PaginationVariant.bottom}
+            onSetPage={this.onSetPage}
+            onPerPageSelect={this.onPerPageSelect}
+            onNextClick={this.onNextClick}
+            onPreviousClick={this.onPreviousClick}
+            onFirstClick={this.onFirstClick}
+            onLastClick={this.onLastClick}
+          />
+        </div>
+      );
+    }
   }
 }
 

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "@patternfly/react-core/dist/styles/base.css";
-import PropTypes from "prop-types";
 import { BASE_URL } from "./API/api";
+import SimpleEmptyState from "./SimpleEmptyState";
+import { withRouter, Link } from "react-router-dom";
 import {
   Button,
   DataToolbarContent,
@@ -10,6 +11,7 @@ import {
   DataToolbar,
 } from "@patternfly/react-core";
 import AppPage from "./page";
+import Screenshots from "./Screenshots";
 class Versions extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +21,9 @@ class Versions extends Component {
       previousProductID: "",
       selectVersions: "",
       selectLocales: "",
+      isclicked: false,
+      isVersionSelected: false,
+      isLocaleSelected: false,
     };
 
     this.handleDropdownChangeVersion = this.handleDropdownChangeVersion.bind(
@@ -35,26 +40,11 @@ class Versions extends Component {
     console.log(e.target.value);
   };
   handleDropdownChangeVersion(e) {
-    this.setState({ selectVersions: e.target.value });
+    this.setState({ selectVersions: e.target.value, isVersionSelected: true });
   }
   handleDropdownChangeLocale(e) {
-    this.setState({ selectLocales: e.target.value });
+    this.setState({ selectLocales: e.target.value, isLocaleSelected: true });
   }
-
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
-  onSubmit = (e) => {
-    this.props.history.push({
-      pathname: "/screenshots",
-      state: {
-        product_version_id: this.state.selectVersions,
-        locale_id: this.state.selectLocales,
-      },
-    });
-  };
-
   componentDidMount() {
     this.state.previousProductID = this.props.match.params.productid;
     axios
@@ -62,7 +52,7 @@ class Versions extends Component {
         axios.get(
           `${BASE_URL}/products/${this.state.previousProductID}/product_versions`
         ),
-        axios.get("http://localhost:3001/api/v1/locales"),
+        axios.get(`${BASE_URL}/locales`),
       ])
       .then(([product_versions, locales]) =>
         this.setState({
@@ -76,8 +66,15 @@ class Versions extends Component {
   render() {
     return (
       <AppPage>
-        <DataToolbar variant="label" id="data-toolbar-group-types">
+        <DataToolbar
+          variant="label"
+          id="data-toolbar-group-types"
+          class="pf-c-data-toolbar"
+        >
           <DataToolbarContent>
+            <DataToolbarItem>
+              <Link to="/products"> Back to Products</Link>
+            </DataToolbarItem>
             <DataToolbarItem variant="label" id="version">
               Select a Version
             </DataToolbarItem>
@@ -121,14 +118,29 @@ class Versions extends Component {
               </select>
             </DataToolbarItem>
             <DataToolbarItem>
-              <Button variant="primary" onClick={this.onSubmit}>
+              <Button
+                variant="primary"
+                onClick={() => this.setState({ isclicked: true })}
+              >
                 Submit
               </Button>
             </DataToolbarItem>
           </DataToolbarContent>
         </DataToolbar>
+
+        {/* <SimpleEmptyState /> */}
+        <div>
+          {this.state.isclicked ? (
+            <Screenshots
+              product_version_id={this.state.selectVersions}
+              locale_id={this.state.selectLocales}
+            />
+          ) : (
+            <SimpleEmptyState />
+          )}
+        </div>
       </AppPage>
     );
   }
 }
-export default Versions;
+export default withRouter(Versions);
