@@ -16,7 +16,7 @@ function SimpleEmptyState() {
         Empty State
       </Title>
       <EmptyStateBody>
-        No Images Found. Please select appropriate Version and Locale.
+        Please select appropriate Version and Locale to display images.
       </EmptyStateBody>
     </EmptyState>
   );

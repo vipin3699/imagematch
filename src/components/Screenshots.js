@@ -103,20 +103,24 @@ class Screenshots extends Component {
   }
 
   SetImages(offset, perPage) {
-    let elements_right = this.state.screenshots_en[0].Images.slice(
-      offset,
-      offset + perPage
-    );
-    let elements_left = this.state.screenshots[0].Images.slice(
-      offset,
-      offset + perPage
-    );
-    this.setState({ elements_right: elements_right }, function () {
-      console.log("left images:" + this.state.elements_left.length);
-    });
-    this.setState({ elements_left: elements_left }, function () {
-      console.log("right images:" + this.state.elements_right.length);
-    });
+    if (this.state.screenshots_en.length !== 0) {
+      let elements_right = this.state.screenshots_en[0].Images.slice(
+        offset,
+        offset + perPage
+      );
+      this.setState({ elements_right: elements_right }, function () {
+        console.log("left images:" + this.state.elements_left.length);
+      });
+    }
+    if (this.state.screenshots.length !== 0) {
+      let elements_left = this.state.screenshots[0].Images.slice(
+        offset,
+        offset + perPage
+      );
+      this.setState({ elements_left: elements_left }, function () {
+        console.log("right images:" + this.state.elements_right.length);
+      });
+    }
   }
 
   render() {
@@ -138,20 +142,25 @@ class Screenshots extends Component {
             onFirstClick={this.onFirstClick}
             onLastClick={this.onLastClick}
           />
-
+          <span> &nbsp; </span>s
           <Split gutter="md">
-            <SplitItem>
-              {this.state.elements_right.map((image) => {
-                return <img src={image} alt="" />;
-              })}
-            </SplitItem>
-            <SplitItem>
-              {this.state.elements_left.map((image) => {
-                return <img src={image} alt="" />;
-              })}
-            </SplitItem>
+            {this.state.elements_right.length !== 0}
+            {
+              <SplitItem>
+                {this.state.elements_right.map((image) => {
+                  return <img src={image} alt="" />;
+                })}
+              </SplitItem>
+            }
+            {this.state.elements_left.length !== 0}
+            {
+              <SplitItem>
+                {this.state.elements_left.map((image) => {
+                  return <img src={image} alt="" />;
+                })}
+              </SplitItem>
+            }
           </Split>
-
           <Pagination
             itemCount={this.state.itemCount}
             widgetId="pagination-options-menu-bottom"

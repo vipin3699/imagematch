@@ -1,5 +1,5 @@
 import React from "react";
-import { Brand, PageHeader } from "@patternfly/react-core";
+import { PageHeader, Breadcrumb, BreadcrumbItem } from "@patternfly/react-core";
 import AppToolbar from "./toolbar";
 
 class AppHeader extends React.Component {
@@ -12,9 +12,8 @@ class AppHeader extends React.Component {
         //     alt="Patternfly Logo"
         //   />
         // }
-        logo={<Brand alt="LingoQA Dashboard" />}
+        logo={"LingoQA Dashboard"}
         toolbar={<AppToolbar />}
-        showNavToggle
       />
     );
   }

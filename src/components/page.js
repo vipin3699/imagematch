@@ -1,5 +1,11 @@
 import React from "react";
-import { Page, PageSection, SkipToContent } from "@patternfly/react-core";
+import {
+  Page,
+  PageSection,
+  SkipToContent,
+  Breadcrumb,
+  BreadcrumbItem,
+} from "@patternfly/react-core";
 import AppHeader from "./header";
 class AppPage extends React.Component {
   constructor(props) {
