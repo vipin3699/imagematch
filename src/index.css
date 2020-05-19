@@ -28,7 +28,7 @@ code {
   transform: scale(1.5);
 }
 .pf-c-data-toolbar {
-  top: -23px;
+  /* top: 2px; */
   width: 105%;
-  left: -2%;
+  left: -2.5%;
 }

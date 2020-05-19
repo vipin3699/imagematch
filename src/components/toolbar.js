@@ -5,7 +5,9 @@ import {
   DropdownItem,
   DropdownSeparator,
   Toolbar,
+  Avatar,
 } from "@patternfly/react-core";
+import avatarImg from "./avatar.png";
 class AppToolbar extends React.Component {
   constructor(props) {
     super(props);
@@ -55,6 +57,7 @@ class AppToolbar extends React.Component {
           }
           dropdownItems={userDropdownItems}
         />
+        <Avatar src={avatarImg} alt="avatar"></Avatar>
       </Toolbar>
     );
   }

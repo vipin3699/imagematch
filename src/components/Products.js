@@ -32,9 +32,9 @@ class Products extends Component {
     return (
       <AppPage>
         <Grid gutter="lg" sm={6} md={3}>
-          {this.state.products.map((products) => {
+          {this.state.products.map((products, index) => {
             return (
-              <Card className="product-card" isHoverable>
+              <Card className="product-card" key={index} isHoverable>
                 <CardHeader></CardHeader>
                 <CardBody>
                   <Link to={`/products/${products.id}/screenshots`}>

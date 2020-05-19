@@ -27,7 +27,6 @@ class AppPage extends React.Component {
     const PageSkipToContent = (
       <SkipToContent href={`#${pageId}`}>Skip to Content</SkipToContent>
     );
-
     return (
       <Page
         header={<AppHeader />}

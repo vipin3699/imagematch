@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem, Card, Flex, FlexItem } from "@patternfly/react-core";
 import { BASE_URL } from "./API/api";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
@@ -74,15 +74,12 @@ class Screenshots extends Component {
       .all([
         axios.get(`${BASE_URL}/screenshots`, {
           params: {
-            // product_version_id: this.props.location.state.product_version_id,
-            // locale_id: this.props.location.state.locale_id,
             product_version_id: this.props.product_version_id,
             locale_id: this.props.locale_id,
           },
         }),
         axios.get(`${BASE_URL}/screenshots`, {
           params: {
-            // product_version_id: this.props.location.state.product_version_id,
             product_version_id: this.props.product_version_id,
             locale_id: 3,
           },
@@ -142,7 +139,7 @@ class Screenshots extends Component {
             onFirstClick={this.onFirstClick}
             onLastClick={this.onLastClick}
           />
-          <span> &nbsp; </span>s
+          <span> &nbsp; </span>
           <Split gutter="md">
             {this.state.elements_right.length !== 0}
             {
@@ -152,6 +149,7 @@ class Screenshots extends Component {
                 })}
               </SplitItem>
             }
+            <SplitItem isFilled></SplitItem>
             {this.state.elements_left.length !== 0}
             {
               <SplitItem>

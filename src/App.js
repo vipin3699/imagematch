@@ -9,7 +9,7 @@ class PageLayoutSimpleNav extends React.Component {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact path="/login" component={SimpleLoginPage}></Route>
+          <Route exact path="/" component={SimpleLoginPage}></Route>
           <Route exact path="/products" component={Products}></Route>
           <Route
             path="/products/:productid/screenshots"

@@ -12,28 +12,31 @@ import {
   Form,
   FormGroup,
   ActionGroup,
-  Breadcrumb,
-  BreadcrumbItem,
   Button,
+  // DataToolbar,
+  // DataToolbarItem,
+  // DataToolbarContent,
+} from "@patternfly/react-core";
+import {
   DataToolbar,
   DataToolbarItem,
   DataToolbarContent,
-  CardHeader,
-} from "@patternfly/react-core";
+} from "@patternfly/react-core/dist/esm/experimental";
 import AppPage from "./page";
 import Screenshots from "./Screenshots";
+import Breadcrumbs from "./Breadcrumbs";
 class Versions extends Component {
   constructor(props) {
     super(props);
     this.state = {
       product_versions: [],
       locales: [],
-      previousProductID: "",
       selectVersions: "",
       selectLocales: "",
       isclicked: false,
       isVersionSelected: false,
       isLocaleSelected: false,
+      previousProductID: this.props.match.params.productid,
     };
 
     this.handleDropdownChangeVersion = this.handleDropdownChangeVersion.bind(
@@ -43,12 +46,12 @@ class Versions extends Component {
       this
     );
   }
-  handleChange = (e) => {
-    var value = this.state.locales.filter(function (item) {
-      return item.key === e.target.value;
-    });
-    console.log(e.target.value);
-  };
+  // handleChange = (e) => {
+  //   var value = this.state.locales.filter(function (item) {
+  //     return item.key === e.target.value;
+  //   });
+  //   console.log(e.target.value);
+  // };
   handleDropdownChangeVersion(e) {
     this.setState({ selectVersions: e.target.value, isVersionSelected: true });
   }
@@ -56,7 +59,6 @@ class Versions extends Component {
     this.setState({ selectLocales: e.target.value, isLocaleSelected: true });
   }
   componentDidMount() {
-    this.state.previousProductID = this.props.match.params.productid;
     axios
       .all([
         axios.get(
@@ -76,12 +78,13 @@ class Versions extends Component {
   render() {
     return (
       <AppPage>
+        <Breadcrumbs />
         {this.state.isclicked ? (
           <div>
             <DataToolbar
               variant="label"
               id="data-toolbar-group-types"
-              class="pf-c-data-toolbar"
+              className="pf-c-data-toolbar"
             >
               <DataToolbarContent>
                 <DataToolbarItem variant="label" id="version">
@@ -89,13 +92,13 @@ class Versions extends Component {
                 </DataToolbarItem>
                 <DataToolbarItem>
                   <select
-                    class="pf-c-form-control"
+                    className="pf-c-form-control"
                     id="version"
                     name="version"
                     onChange={
                       (this.handleChange, this.handleDropdownChangeVersion)
                     }
-                    ariaLabelledBy="version"
+                    aria-labelledby="version"
                     value={this.state.selectVersions}
                   >
                     <option></option>
@@ -113,13 +116,13 @@ class Versions extends Component {
                 </DataToolbarItem>
                 <DataToolbarItem>
                   <select
-                    class="pf-c-form-control"
+                    className="pf-c-form-control"
                     id="locale"
                     name="locale"
                     onChange={
                       (this.handleChange, this.handleDropdownChangeLocale)
                     }
-                    ariaLabelledBy="locale"
+                    aria-labelledby="locale"
                     value={this.state.selectLocales}
                   >
                     <option></option>
@@ -136,14 +139,7 @@ class Versions extends Component {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      if (
-                        this.state.isLocaleSelected === false &&
-                        this.state.isVersionSelected === false
-                      ) {
-                        alert("Please select a Version and a Locale");
-                      } else {
-                        this.setState({ isclicked: true });
-                      }
+                      this.setState({ isclicked: true });
                     }}
                   >
                     Submit
@@ -166,13 +162,13 @@ class Versions extends Component {
                 <Form>
                   <FormGroup label="Select Version" fieldId="version">
                     <select
-                      class="pf-c-form-control"
+                      className="pf-c-form-control"
                       id="version"
                       name="version"
                       onChange={
                         (this.handleChange, this.handleDropdownChangeVersion)
                       }
-                      ariaLabelledBy="version"
+                      aria-labelledby="version"
                     >
                       <option>Select</option>
                       {this.state.product_versions.map(function (data, key) {
@@ -186,13 +182,13 @@ class Versions extends Component {
                   </FormGroup>
                   <FormGroup label="Select Locale" fieldId="locale">
                     <select
-                      class="pf-c-form-control"
+                      className="pf-c-form-control"
                       id="locale"
                       name="locale"
                       onChange={
                         (this.handleChange, this.handleDropdownChangeLocale)
                       }
-                      ariaLabelledBy="locale"
+                      aria-labelledby="locale"
                     >
                       <option>Select</option>
                       {this.state.locales.map(function (data, key) {
