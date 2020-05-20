@@ -4,6 +4,9 @@ import "@patternfly/react-core/dist/styles/base.css";
 import { BASE_URL } from "./API/api";
 import SimpleEmptyState from "./SimpleEmptyState";
 import { withRouter } from "react-router-dom";
+import AppPage from "./page";
+import Screenshots from "./Screenshots";
+import Breadcrumbs from "./Breadcrumbs";
 import {
   Card,
   CardBody,
@@ -13,18 +16,10 @@ import {
   FormGroup,
   ActionGroup,
   Button,
-  // DataToolbar,
-  // DataToolbarItem,
-  // DataToolbarContent,
-} from "@patternfly/react-core";
-import {
   DataToolbar,
   DataToolbarItem,
   DataToolbarContent,
-} from "@patternfly/react-core/dist/esm/experimental";
-import AppPage from "./page";
-import Screenshots from "./Screenshots";
-import Breadcrumbs from "./Breadcrumbs";
+} from "@patternfly/react-core";
 class Versions extends Component {
   constructor(props) {
     super(props);
@@ -46,18 +41,13 @@ class Versions extends Component {
       this
     );
   }
-  // handleChange = (e) => {
-  //   var value = this.state.locales.filter(function (item) {
-  //     return item.key === e.target.value;
-  //   });
-  //   console.log(e.target.value);
-  // };
   handleDropdownChangeVersion(e) {
     this.setState({ selectVersions: e.target.value, isVersionSelected: true });
   }
   handleDropdownChangeLocale(e) {
     this.setState({ selectLocales: e.target.value, isLocaleSelected: true });
   }
+
   componentDidMount() {
     axios
       .all([
@@ -147,6 +137,7 @@ class Versions extends Component {
                 </DataToolbarItem>
               </DataToolbarContent>
             </DataToolbar>
+            <span> &nbsp; </span>
             <Screenshots
               product_version_id={this.state.selectVersions}
               locale_id={this.state.selectLocales}

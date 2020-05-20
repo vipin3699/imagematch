@@ -1,9 +1,9 @@
 import React from "react";
 import "@patternfly/react-core/dist/styles/base.css";
+import SimpleLoginPage from "./components/login_page";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 import Versions from "./components/Versions";
 import Products from "./components/Products";
-import SimpleLoginPage from "./components/login_page";
 class PageLayoutSimpleNav extends React.Component {
   render() {
     return (

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Split, SplitItem, Card, Flex, FlexItem } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core";
 import { BASE_URL } from "./API/api";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
@@ -140,22 +140,22 @@ class Screenshots extends Component {
             onLastClick={this.onLastClick}
           />
           <span> &nbsp; </span>
-          <Split gutter="md">
+          <Split>
             {this.state.elements_right.length !== 0}
             {
               <SplitItem>
-                {this.state.elements_right.map((image) => {
-                  return <img src={image} alt="" />;
-                })}
+                {this.state.elements_right.map((image, index) => (
+                  <img src={image} alt="" key={index} />
+                ))}
               </SplitItem>
             }
             <SplitItem isFilled></SplitItem>
             {this.state.elements_left.length !== 0}
             {
               <SplitItem>
-                {this.state.elements_left.map((image) => {
-                  return <img src={image} alt="" />;
-                })}
+                {this.state.elements_left.map((image, index) => (
+                  <img src={image} alt="" key={index} />
+                ))}
               </SplitItem>
             }
           </Split>
