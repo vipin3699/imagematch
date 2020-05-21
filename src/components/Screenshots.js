@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem, Card } from "@patternfly/react-core";
 import { BASE_URL } from "./API/api";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
@@ -145,16 +145,17 @@ class Screenshots extends Component {
             {
               <SplitItem>
                 {this.state.elements_right.map((image, index) => (
-                  <img src={image} alt="" key={index} />
+                  <img src={image} alt="" key={index} className="image" />
                 ))}
               </SplitItem>
             }
-            <SplitItem isFilled></SplitItem>
+            <SplitItem isFilled> </SplitItem>
+
             {this.state.elements_left.length !== 0}
             {
               <SplitItem>
                 {this.state.elements_left.map((image, index) => (
-                  <img src={image} alt="" key={index} />
+                  <img src={image} alt="" key={index} className="image" />
                 ))}
               </SplitItem>
             }
