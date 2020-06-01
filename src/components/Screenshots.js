@@ -123,6 +123,50 @@ class Screenshots extends Component {
   render() {
     if (this.state.screenshots_en.length === 0) {
       return <SimpleEmptyState />;
+    } else if (
+      this.state.screenshots[0].id === this.state.screenshots_en[0].id
+    ) {
+      return (
+        <div>
+          <Pagination
+            itemCount={this.state.itemCount}
+            widgetId="pagination-options-menu-bottom"
+            perPage={this.state.perPage}
+            page={this.state.page}
+            variant={PaginationVariant.bottom}
+            onSetPage={this.onSetPage}
+            onPerPageSelect={this.onPerPageSelect}
+            onNextClick={this.onNextClick}
+            onPreviousClick={this.onPreviousClick}
+            onFirstClick={this.onFirstClick}
+            onLastClick={this.onLastClick}
+          />
+          <span> &nbsp; </span>
+
+          <Split>
+            {
+              <SplitItem>
+                {this.state.elements_left.map((image, index) => (
+                  <img src={image} alt="" key={index} className="image" />
+                ))}
+              </SplitItem>
+            }
+          </Split>
+          <Pagination
+            itemCount={this.state.itemCount}
+            widgetId="pagination-options-menu-bottom"
+            perPage={this.state.perPage}
+            page={this.state.page}
+            variant={PaginationVariant.bottom}
+            onSetPage={this.onSetPage}
+            onPerPageSelect={this.onPerPageSelect}
+            onNextClick={this.onNextClick}
+            onPreviousClick={this.onPreviousClick}
+            onFirstClick={this.onFirstClick}
+            onLastClick={this.onLastClick}
+          />
+        </div>
+      );
     } else {
       return (
         <div>
@@ -140,6 +184,7 @@ class Screenshots extends Component {
             onLastClick={this.onLastClick}
           />
           <span> &nbsp; </span>
+
           <Split>
             {this.state.elements_right.length !== 0}
             {
