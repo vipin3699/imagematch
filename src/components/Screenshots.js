@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Split, SplitItem, Card } from "@patternfly/react-core";
+import { Split, SplitItem } from "@patternfly/react-core";
 import { BASE_URL } from "./API/api";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
@@ -20,6 +20,9 @@ class Screenshots extends Component {
       page: 1,
       perPage: 10,
     };
+    this.pagination_for_en = this.pagination_for_en.bind(this);
+    this.pagination_for_other = this.pagination_for_other.bind(this);
+
     // Pagination functions
     //Set the Page
     this.onSetPage = (_event, pageNumber) => {
@@ -101,125 +104,131 @@ class Screenshots extends Component {
 
   SetImages(offset, perPage) {
     if (this.state.screenshots_en.length !== 0) {
-      let elements_right = this.state.screenshots_en[0].Images.slice(
-        offset,
-        offset + perPage
-      );
-      this.setState({ elements_right: elements_right }, function () {
-        console.log("left images:" + this.state.elements_left.length);
-      });
-    }
-    if (this.state.screenshots.length !== 0) {
-      let elements_left = this.state.screenshots[0].Images.slice(
+      let elements_left = this.state.screenshots_en[0].Images.slice(
         offset,
         offset + perPage
       );
       this.setState({ elements_left: elements_left }, function () {
+        console.log("left images:" + this.state.elements_left.length);
+      });
+    }
+    if (this.state.screenshots.length !== 0) {
+      let elements_right = this.state.screenshots[0].Images.slice(
+        offset,
+        offset + perPage
+      );
+      this.setState({ elements_right: elements_right }, function () {
         console.log("right images:" + this.state.elements_right.length);
       });
     }
   }
+  pagination_for_en() {
+    return (
+      <div>
+        <Pagination
+          itemCount={this.state.itemCount}
+          widgetId="pagination-options-menu-bottom"
+          perPage={this.state.perPage}
+          page={this.state.page}
+          variant={PaginationVariant.bottom}
+          onSetPage={this.onSetPage}
+          onPerPageSelect={this.onPerPageSelect}
+          onNextClick={this.onNextClick}
+          onPreviousClick={this.onPreviousClick}
+          onFirstClick={this.onFirstClick}
+          onLastClick={this.onLastClick}
+        />
+        <span> &nbsp; </span>
+
+        <div className="en_screens">
+          {this.state.elements_left.map((image, index) => (
+            <img src={image} alt="" key={index} className="image" />
+          ))}
+        </div>
+        <Pagination
+          itemCount={this.state.itemCount}
+          widgetId="pagination-options-menu-bottom"
+          perPage={this.state.perPage}
+          page={this.state.page}
+          variant={PaginationVariant.bottom}
+          onSetPage={this.onSetPage}
+          onPerPageSelect={this.onPerPageSelect}
+          onNextClick={this.onNextClick}
+          onPreviousClick={this.onPreviousClick}
+          onFirstClick={this.onFirstClick}
+          onLastClick={this.onLastClick}
+        />
+      </div>
+    );
+  }
+  pagination_for_other() {
+    return (
+      <div>
+        <Pagination
+          itemCount={this.state.itemCount}
+          widgetId="pagination-options-menu-bottom"
+          perPage={this.state.perPage}
+          page={this.state.page}
+          variant={PaginationVariant.bottom}
+          onSetPage={this.onSetPage}
+          onPerPageSelect={this.onPerPageSelect}
+          onNextClick={this.onNextClick}
+          onPreviousClick={this.onPreviousClick}
+          onFirstClick={this.onFirstClick}
+          onLastClick={this.onLastClick}
+        />
+        <span> &nbsp; </span>
+
+        <Split>
+          {this.state.elements_right.length !== 0}
+          {
+            <SplitItem>
+              {this.state.elements_right.map((image, index) => (
+                <img src={image} alt="" key={index} className="image" />
+              ))}
+            </SplitItem>
+          }
+          <SplitItem isFilled> </SplitItem>
+
+          {this.state.elements_left.length !== 0}
+          {
+            <SplitItem>
+              {this.state.elements_left.map((image, index) => (
+                <img src={image} alt="" key={index} className="image" />
+              ))}
+            </SplitItem>
+          }
+        </Split>
+        <Pagination
+          itemCount={this.state.itemCount}
+          widgetId="pagination-options-menu-bottom"
+          perPage={this.state.perPage}
+          page={this.state.page}
+          variant={PaginationVariant.bottom}
+          onSetPage={this.onSetPage}
+          onPerPageSelect={this.onPerPageSelect}
+          onNextClick={this.onNextClick}
+          onPreviousClick={this.onPreviousClick}
+          onFirstClick={this.onFirstClick}
+          onLastClick={this.onLastClick}
+        />
+      </div>
+    );
+  }
 
   render() {
     if (this.state.screenshots_en.length === 0) {
+      //If english locale screenshots are not present for selected version
       return <SimpleEmptyState />;
+    } else if (this.state.screenshots.length === 0) {
+      return <div>{this.pagination_for_en()}</div>;
     } else if (
       this.state.screenshots[0].id === this.state.screenshots_en[0].id
-    ) {
-      return (
-        <div>
-          <Pagination
-            itemCount={this.state.itemCount}
-            widgetId="pagination-options-menu-bottom"
-            perPage={this.state.perPage}
-            page={this.state.page}
-            variant={PaginationVariant.bottom}
-            onSetPage={this.onSetPage}
-            onPerPageSelect={this.onPerPageSelect}
-            onNextClick={this.onNextClick}
-            onPreviousClick={this.onPreviousClick}
-            onFirstClick={this.onFirstClick}
-            onLastClick={this.onLastClick}
-          />
-          <span> &nbsp; </span>
-
-          <Split>
-            {
-              <SplitItem>
-                {this.state.elements_left.map((image, index) => (
-                  <img src={image} alt="" key={index} className="image" />
-                ))}
-              </SplitItem>
-            }
-          </Split>
-          <Pagination
-            itemCount={this.state.itemCount}
-            widgetId="pagination-options-menu-bottom"
-            perPage={this.state.perPage}
-            page={this.state.page}
-            variant={PaginationVariant.bottom}
-            onSetPage={this.onSetPage}
-            onPerPageSelect={this.onPerPageSelect}
-            onNextClick={this.onNextClick}
-            onPreviousClick={this.onPreviousClick}
-            onFirstClick={this.onFirstClick}
-            onLastClick={this.onLastClick}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Pagination
-            itemCount={this.state.itemCount}
-            widgetId="pagination-options-menu-bottom"
-            perPage={this.state.perPage}
-            page={this.state.page}
-            variant={PaginationVariant.bottom}
-            onSetPage={this.onSetPage}
-            onPerPageSelect={this.onPerPageSelect}
-            onNextClick={this.onNextClick}
-            onPreviousClick={this.onPreviousClick}
-            onFirstClick={this.onFirstClick}
-            onLastClick={this.onLastClick}
-          />
-          <span> &nbsp; </span>
-
-          <Split>
-            {this.state.elements_right.length !== 0}
-            {
-              <SplitItem>
-                {this.state.elements_right.map((image, index) => (
-                  <img src={image} alt="" key={index} className="image" />
-                ))}
-              </SplitItem>
-            }
-            <SplitItem isFilled> </SplitItem>
-
-            {this.state.elements_left.length !== 0}
-            {
-              <SplitItem>
-                {this.state.elements_left.map((image, index) => (
-                  <img src={image} alt="" key={index} className="image" />
-                ))}
-              </SplitItem>
-            }
-          </Split>
-          <Pagination
-            itemCount={this.state.itemCount}
-            widgetId="pagination-options-menu-bottom"
-            perPage={this.state.perPage}
-            page={this.state.page}
-            variant={PaginationVariant.bottom}
-            onSetPage={this.onSetPage}
-            onPerPageSelect={this.onPerPageSelect}
-            onNextClick={this.onNextClick}
-            onPreviousClick={this.onPreviousClick}
-            onFirstClick={this.onFirstClick}
-            onLastClick={this.onLastClick}
-          />
-        </div>
-      );
+      // if user selects english display only one column of english screenshots
+    )
+      return <div>{this.pagination_for_en()}</div>;
+    else {
+      return <div>{this.pagination_for_other()}</div>;
     }
   }
 }
