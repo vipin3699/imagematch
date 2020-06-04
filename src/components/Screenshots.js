@@ -4,6 +4,8 @@ import { Split, SplitItem } from "@patternfly/react-core";
 import { BASE_URL } from "./API/api";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
+import LazyLoad from "react-lazyload";
+import spinner from "./spinner";
 class Screenshots extends Component {
   constructor(props) {
     super(props);
@@ -142,7 +144,9 @@ class Screenshots extends Component {
 
         <div className="en_screens">
           {this.state.elements_left.map((image, index) => (
-            <img src={image} alt="" key={index} className="image" />
+            <LazyLoad height={100}>
+              <img src={image} alt="" key={index} />
+            </LazyLoad>
           ))}
         </div>
         <Pagination

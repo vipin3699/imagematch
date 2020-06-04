@@ -47,12 +47,12 @@ class Versions extends Component {
     console.log("Locales:" + this.state.selectLocales);
     this.setState({ isclicked: true });
     this.setState({ isclicked: true });
-    this.paymentForm = (
-      <Screenshots
-        product_version_id={this.state.selectVersions}
-        locale_id={this.state.selectLocales}
-      />
-    );
+    // this.paymentForm = (
+    //   <Screenshots
+    //     product_version_id={this.state.selectVersions}
+    //     locale_id={this.state.selectLocales}
+    //   />
+    // );
   }
 
   handleDropdownChangeVersion(e) {
@@ -148,8 +148,18 @@ class Versions extends Component {
                 </DataToolbarContent>
               </DataToolbar>
 
-              <div className="form-container">
+              {/* <div className="form-container">
                 {this.state.isclicked ? this.paymentForm : <SimpleEmptyState />}
+              </div> */}
+              <div>
+                {this.state.isclicked ? (
+                  <Screenshots
+                    product_version_id={this.state.selectVersions}
+                    locale_id={this.state.selectLocales}
+                  />
+                ) : (
+                  <SimpleEmptyState />
+                )}
               </div>
             </div>
           </form>
