@@ -12,6 +12,7 @@ import {
   CardFooter,
   CardHeader,
   Grid,
+  PageSection,
 } from "@patternfly/react-core";
 class Products extends Component {
   constructor(props) {
@@ -31,28 +32,30 @@ class Products extends Component {
   render() {
     return (
       <AppPage>
-        <Grid gutter="lg" sm={6} md={3}>
-          {this.state.products.map((products, index) => {
-            return (
-              <Card className="product-card" key={index} isHoverable>
-                <CardHeader></CardHeader>
-                <CardBody>
-                  <Link to={`/products/${products.id}/screenshots`}>
-                    <TextContent>
-                      <Text
-                        className="product-title"
-                        component={TextVariants.h3}
-                      >
-                        {products.name}
-                      </Text>
-                    </TextContent>
-                  </Link>
-                </CardBody>
-                <CardFooter></CardFooter>
-              </Card>
-            );
-          })}
-        </Grid>
+        <PageSection>
+          <Grid gutter="lg" sm={6} md={3}>
+            {this.state.products.map((products, index) => {
+              return (
+                <Card className="product-card" key={index} isHoverable>
+                  <CardHeader></CardHeader>
+                  <CardBody>
+                    <Link to={`/products/${products.id}/screenshots`}>
+                      <TextContent>
+                        <Text
+                          className="product-title"
+                          component={TextVariants.h3}
+                        >
+                          {products.name}
+                        </Text>
+                      </TextContent>
+                    </Link>
+                  </CardBody>
+                  <CardFooter></CardFooter>
+                </Card>
+              );
+            })}
+          </Grid>
+        </PageSection>
       </AppPage>
     );
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Page, PageSection, SkipToContent } from "@patternfly/react-core";
+import { Page, SkipToContent } from "@patternfly/react-core";
 import AppHeader from "./header";
 class AppPage extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class AppPage extends React.Component {
         skipToContent={PageSkipToContent}
         mainContainerId={pageId}
       >
-        <PageSection isFilled>{children}</PageSection>
+        {children}
       </Page>
     );
   }

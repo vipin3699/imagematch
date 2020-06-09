@@ -2,24 +2,13 @@ import React, { Component } from "react";
 import axios from "axios";
 import "@patternfly/react-core/dist/styles/base.css";
 import { BASE_URL } from "./API/api";
-import SimpleEmptyState from "./SimpleEmptyState";
 import { withRouter } from "react-router-dom";
 import AppPage from "./page";
 import Screenshots from "./Screenshots";
 import Breadcrumbs from "./Breadcrumbs";
-import {
-  Card,
-  CardBody,
-  Bullseye,
-  Divider,
-  Form,
-  FormGroup,
-  ActionGroup,
-  Button,
-  DataToolbar,
-  DataToolbarItem,
-  DataToolbarContent,
-} from "@patternfly/react-core";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import EmptyStateForm from "./EmptyStateForm";
+import VersionsToolbar from "./VersionsToolbar";
 class Versions extends Component {
   constructor(props) {
     super(props);
@@ -32,34 +21,76 @@ class Versions extends Component {
       isVersionSelected: false,
       isLocaleSelected: false,
       previousProductID: this.props.match.params.productid,
+      screenshots: [],
+      screenshots_en: [],
+      itemCount: "",
+      elements: [],
+      elements_right: [],
+      elements_left: [],
+      offset: 0,
+      currentPage: 0,
+      page: 1,
+      perPage: 10,
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.paymentForm = null; //this
-    this.handleDropdownChangeVersion = this.handleDropdownChangeVersion.bind(
-      this
-    );
-    this.handleDropdownChangeLocale = this.handleDropdownChangeLocale.bind(
-      this
-    );
-  }
-  handleSubmit() {
-    console.log("Version:" + this.state.selectVersions);
-    console.log("Locales:" + this.state.selectLocales);
-    this.setState({ isclicked: true });
-    this.setState({ isclicked: true });
-    // this.paymentForm = (
-    //   <Screenshots
-    //     product_version_id={this.state.selectVersions}
-    //     locale_id={this.state.selectLocales}
-    //   />
-    // );
   }
 
-  handleDropdownChangeVersion(e) {
-    this.setState({ selectVersions: e.target.value, isVersionSelected: true });
+  handleDropdownChangeVersion(version) {
+    this.setState({ selectVersions: version, isVersionSelected: true });
   }
-  handleDropdownChangeLocale(e) {
-    this.setState({ selectLocales: e.target.value, isLocaleSelected: true });
+  handleDropdownChangeLocale(locale) {
+    this.setState({ selectLocales: locale, isLocaleSelected: true });
+  }
+
+  SetImages(offset, perPage) {
+    if (this.state.screenshots_en.length !== 0) {
+      let elements_left = this.state.screenshots_en[0].Images.slice(
+        offset,
+        offset + perPage
+      );
+      this.setState({ elements_left });
+    }
+    if (this.state.screenshots.length !== 0) {
+      let elements_right = this.state.screenshots[0].Images.slice(
+        offset,
+        offset + perPage
+      );
+      this.setState({ elements_right });
+    }
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    axios
+      .all([
+        axios.get(`${BASE_URL}/screenshots`, {
+          params: {
+            product_version_id: this.state.selectVersions,
+            locale_id: this.state.selectLocales,
+          },
+        }),
+        axios.get(`${BASE_URL}/screenshots`, {
+          params: {
+            product_version_id: this.state.selectVersions,
+            locale_id: 3,
+          },
+        }),
+      ])
+      .then(([screenshots, screenshots_en]) => {
+        if (!screenshots_en.data.length) {
+          alert("The selected Version have no English Screenshots");
+        } else {
+          this.setState(
+            {
+              screenshots: screenshots.data,
+              screenshots_en: screenshots_en.data,
+              itemCount: Math.ceil(screenshots_en.data[0].Images.length),
+            }
+
+            // () => this.SetImages(this.state.offset, this.state.perPage)
+          );
+        }
+      })
+
+      .catch((error) => console.log(error));
   }
 
   componentDidMount() {
@@ -74,6 +105,8 @@ class Versions extends Component {
         this.setState({
           product_versions: product_versions.data,
           locales: locales.data,
+          selectVersions: product_versions.data[0].id,
+          selectLocales: locales.data[0].id,
         })
       )
       .catch((error) => console.log(error));
@@ -81,149 +114,69 @@ class Versions extends Component {
 
   render() {
     return (
-      <AppPage>
-        <Breadcrumbs />
-        {this.state.isclicked ? (
-          <form onSubmit={this.handleSubmit}>
-            <div>
-              <DataToolbar
-                variant="label"
-                id="data-toolbar-group-types"
-                className="pf-c-data-toolbar"
-              >
-                <DataToolbarContent>
-                  <DataToolbarItem variant="label" id="version">
-                    Select a Version
-                  </DataToolbarItem>
-                  <DataToolbarItem>
-                    <select
-                      className="pf-c-form-control"
-                      id="version"
-                      name="version"
-                      onChange={
-                        (this.handleChange, this.handleDropdownChangeVersion)
-                      }
-                      aria-labelledby="version"
-                      value={this.state.selectVersions}
-                    >
-                      <option></option>
-                      {this.state.product_versions.map(function (data, key) {
-                        return (
-                          <option key={data.name} value={data.id}>
-                            {data.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </DataToolbarItem>
-                  <DataToolbarItem variant="label" id="locale">
-                    Select a Locale
-                  </DataToolbarItem>
-                  <DataToolbarItem>
-                    <select
-                      className="pf-c-form-control"
-                      id="locale"
-                      name="locale"
-                      onChange={
-                        (this.handleChange, this.handleDropdownChangeLocale)
-                      }
-                      aria-labelledby="locale"
-                      value={this.state.selectLocales}
-                    >
-                      <option></option>
-                      {this.state.locales.map(function (data, key) {
-                        return (
-                          <option key={data.language} value={data.id}>
-                            {data.language}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </DataToolbarItem>
-                  <DataToolbarItem>
-                    <Button type="submit" variant="primary">
-                      Submit
-                    </Button>
-                  </DataToolbarItem>
-                </DataToolbarContent>
-              </DataToolbar>
+      <>
+        <AppPage>
+          <PageSection variant={PageSectionVariants.light}>
+            <Breadcrumbs />
 
-              {/* <div className="form-container">
-                {this.state.isclicked ? this.paymentForm : <SimpleEmptyState />}
-              </div> */}
-              <div>
-                {this.state.isclicked ? (
-                  <Screenshots
-                    product_version_id={this.state.selectVersions}
-                    locale_id={this.state.selectLocales}
-                  />
-                ) : (
-                  <SimpleEmptyState />
-                )}
+            {this.state.locales.length &&
+              this.state.product_versions.length &&
+              ((this.state.screenshots && this.state.screenshots.length > 0) ||
+                (this.state.screenshots_en &&
+                  this.state.screenshots_en.length > 0)) && (
+                <VersionsToolbar
+                  selectVersions={this.state.selectVersions}
+                  selectLocales={this.state.selectLocales}
+                  productVersions={this.state.product_versions}
+                  productLocales={this.state.locales}
+                  handleVersionChange={(version) =>
+                    this.handleDropdownChangeVersion(version)
+                  }
+                  handleLocaleChange={(locale) =>
+                    this.handleDropdownChangeLocale(locale)
+                  }
+                  handleFormSubmit={(e) => this.handleSubmit(e)}
+                />
+              )}
+          </PageSection>
+
+          <PageSection>
+            {(this.state.screenshots && this.state.screenshots.length > 0) ||
+            (this.state.screenshots_en &&
+              this.state.screenshots_en.length > 0) ? (
+              <div className="form-container">
+                <Screenshots
+                  screenshots={this.state.screenshots}
+                  screenshots_en={this.state.screenshots_en}
+                  itemCount={this.state.itemCount}
+                  elements={this.state.elements}
+                  elements_right={this.state.elements_right}
+                  elements_left={this.state.elements_left}
+                  offset={this.state.offset}
+                  currentPage={this.state.currentPage}
+                  page={this.state.page}
+                  perPage={this.state.perPage}
+                />
               </div>
-            </div>
-          </form>
-        ) : (
-          <Bullseye>
-            <Card>
-              <CardBody>
-                <SimpleEmptyState />
-                <Divider />
-                <span> &nbsp; </span>
-                <form onSubmit={this.handleSubmit}>
-                  <Form>
-                    <FormGroup label="Select Version" fieldId="version">
-                      <select
-                        className="pf-c-form-control"
-                        id="version"
-                        name="version"
-                        onChange={
-                          (this.handleChange, this.handleDropdownChangeVersion)
-                        }
-                        aria-labelledby="version"
-                      >
-                        <option>Select</option>
-                        {this.state.product_versions.map(function (data, key) {
-                          return (
-                            <option key={data.name} value={data.id}>
-                              {data.name}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </FormGroup>
-                    <FormGroup label="Select Locale" fieldId="locale">
-                      <select
-                        className="pf-c-form-control"
-                        id="locale"
-                        name="locale"
-                        onChange={
-                          (this.handleChange, this.handleDropdownChangeLocale)
-                        }
-                        aria-labelledby="locale"
-                      >
-                        <option>Select</option>
-                        {this.state.locales.map(function (data, key) {
-                          return (
-                            <option key={data.language} value={data.id}>
-                              {data.language}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </FormGroup>
-                    <ActionGroup>
-                      <Button variant="primary" type="submit">
-                        Submit
-                      </Button>
-                    </ActionGroup>
-                  </Form>
-                </form>
-              </CardBody>
-            </Card>
-          </Bullseye>
-        )}
-      </AppPage>
+            ) : (
+              this.state.locales.length &&
+              this.state.product_versions.length && (
+                <EmptyStateForm
+                  productVersions={this.state.product_versions}
+                  productLocales={this.state.locales}
+                  handleVersionChange={(version) =>
+                    this.handleDropdownChangeVersion(version)
+                  }
+                  handleLocaleChange={(locale) =>
+                    this.handleDropdownChangeLocale(locale)
+                  }
+                  handleFormSubmit={(e) => this.handleSubmit(e)}
+                />
+              )
+            )}
+          </PageSection>
+        </AppPage>
+      </>
     );
   }
 }

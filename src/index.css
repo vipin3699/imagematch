@@ -24,14 +24,6 @@ code {
   margin: 10px 0 0;
   font-weight: 600;
 }
-.grid-hover-zoom:hover {
-  transform: scale(1.5);
-}
-.pf-c-data-toolbar {
-  /* top: 2px; */
-  width: 105%;
-  left: -2.5%;
-}
 .image {
   height: 50vh;
   width: auto;
@@ -39,4 +31,8 @@ code {
 .en_screens {
   margin-left: 20%;
   margin-right: 20%;
+}
+.mb-4,
+.pf-c-divider.mb-4 {
+  margin-bottom: var(--pf-global--spacer--xl);
 }

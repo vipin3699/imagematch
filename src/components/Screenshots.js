@@ -1,24 +1,18 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Split, SplitItem } from "@patternfly/react-core";
-import { BASE_URL } from "./API/api";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
-import LazyLoad from "react-lazyload";
-import spinner from "./spinner";
 class Screenshots extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pass: 0,
-      fail: 0,
       screenshots_en: [],
       screenshots: [],
-      offset: 0,
       elements: [],
-      currentPage: 0,
       elements_right: [],
       elements_left: [],
+      offset: 0,
+      currentPage: 0,
       page: 1,
       perPage: 10,
     };
@@ -75,33 +69,34 @@ class Screenshots extends Component {
     // Pagination functions end
   }
   componentDidMount() {
-    axios
-      .all([
-        axios.get(`${BASE_URL}/screenshots`, {
-          params: {
-            product_version_id: this.props.product_version_id,
-            locale_id: this.props.locale_id,
-          },
-        }),
-        axios.get(`${BASE_URL}/screenshots`, {
-          params: {
-            product_version_id: this.props.product_version_id,
-            locale_id: 3,
-          },
-        }),
-      ])
+    this.setState(
+      {
+        screenshots: this.props.screenshots,
+        screenshots_en: this.props.screenshots_en,
+        itemCount: this.props.itemCount,
 
-      .then(([screenshots, screenshots_en]) =>
-        this.setState(
-          {
-            screenshots: screenshots.data,
-            screenshots_en: screenshots_en.data,
-            itemCount: Math.ceil(screenshots_en.data[0].Images.length),
-          },
-          () => this.SetImages(this.state.offset, this.state.perPage)
-        )
-      )
-      .catch((error) => console.log(error));
+        // elements: this.props.elements,
+        // elements_right: this.props.elements_right,
+        // elements_left: this.props.elements_left,
+        // offset: this.props.offset,
+        // currentPage: this.props.currentPage,
+        // page: this.props.page,
+        // perPage: this.props.perPage,
+      },
+      () => this.SetImages(this.state.offset, this.state.perPage)
+    );
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.screenshots !== this.props.screenshots) {
+      this.setState(
+        {
+          screenshots: this.props.screenshots,
+          screenshots_en: this.props.screenshots_en,
+          itemCount: this.props.itemCount,
+        },
+        () => this.SetImages(this.state.offset, this.state.perPage)
+      );
+    }
   }
 
   SetImages(offset, perPage) {
@@ -124,10 +119,12 @@ class Screenshots extends Component {
       });
     }
   }
+
   pagination_for_en() {
     return (
       <div>
         <Pagination
+          className="mb-4"
           itemCount={this.state.itemCount}
           widgetId="pagination-options-menu-bottom"
           perPage={this.state.perPage}
@@ -140,13 +137,10 @@ class Screenshots extends Component {
           onFirstClick={this.onFirstClick}
           onLastClick={this.onLastClick}
         />
-        <span> &nbsp; </span>
 
-        <div className="en_screens">
+        <div className="en_screens mb-4">
           {this.state.elements_left.map((image, index) => (
-            <LazyLoad height={100}>
-              <img src={image} alt="" key={index} />
-            </LazyLoad>
+            <img src={image} alt="" key={index} className="image" />
           ))}
         </div>
         <Pagination
@@ -167,7 +161,7 @@ class Screenshots extends Component {
   }
   pagination_for_other() {
     return (
-      <div>
+      <>
         <Pagination
           itemCount={this.state.itemCount}
           widgetId="pagination-options-menu-bottom"
@@ -181,9 +175,7 @@ class Screenshots extends Component {
           onFirstClick={this.onFirstClick}
           onLastClick={this.onLastClick}
         />
-        <span> &nbsp; </span>
-
-        <Split>
+        <Split gutter="md">
           {this.state.elements_right.length !== 0}
           {
             <SplitItem>
@@ -192,7 +184,6 @@ class Screenshots extends Component {
               ))}
             </SplitItem>
           }
-          <SplitItem isFilled> </SplitItem>
 
           {this.state.elements_left.length !== 0}
           {
@@ -216,7 +207,7 @@ class Screenshots extends Component {
           onFirstClick={this.onFirstClick}
           onLastClick={this.onLastClick}
         />
-      </div>
+      </>
     );
   }
 
@@ -225,14 +216,14 @@ class Screenshots extends Component {
       //If english locale screenshots are not present for selected version
       return <SimpleEmptyState />;
     } else if (this.state.screenshots.length === 0) {
-      return <div>{this.pagination_for_en()}</div>;
+      return <div className="mb-4">{this.pagination_for_en()}</div>;
     } else if (
       this.state.screenshots[0].id === this.state.screenshots_en[0].id
       // if user selects english display only one column of english screenshots
     )
-      return <div>{this.pagination_for_en()}</div>;
+      return <div className="mb-4">{this.pagination_for_en()}</div>;
     else {
-      return <div>{this.pagination_for_other()}</div>;
+      return <div className="mb-4">{this.pagination_for_other()}</div>;
     }
   }
 }
