@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import "@patternfly/react-core/dist/styles/base.css";
 import { BASE_URL } from "./API/api";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import AppPage from "./page";
 import Screenshots from "./Screenshots";
 import Breadcrumbs from "./Breadcrumbs";
@@ -101,14 +101,21 @@ class Versions extends Component {
         ),
         axios.get(`${BASE_URL}/locales`),
       ])
-      .then(([product_versions, locales]) =>
-        this.setState({
-          product_versions: product_versions.data,
-          locales: locales.data,
-          selectVersions: product_versions.data[0].id,
-          selectLocales: locales.data[0].id,
-        })
-      )
+      .then(([product_versions, locales]) => {
+        if (product_versions.data.length === 0) {
+          alert(
+            "No Versions available for selected Product. Please select other Product"
+          );
+          this.props.history.push("/products");
+        } else {
+          this.setState({
+            product_versions: product_versions.data,
+            locales: locales.data,
+            selectVersions: product_versions.data[0].id,
+            selectLocales: locales.data[0].id,
+          });
+        }
+      })
       .catch((error) => console.log(error));
   }
 

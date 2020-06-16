@@ -15,6 +15,7 @@ class Screenshots extends Component {
       currentPage: 0,
       page: 1,
       perPage: 10,
+      showModal: false,
     };
     this.pagination_for_en = this.pagination_for_en.bind(this);
     this.pagination_for_other = this.pagination_for_other.bind(this);
@@ -98,6 +99,11 @@ class Screenshots extends Component {
       );
     }
   }
+  setModalState(showModal) {
+    this.setState({
+      showModal: showModal,
+    });
+  }
 
   SetImages(offset, perPage) {
     if (this.state.screenshots_en.length !== 0) {
@@ -175,7 +181,17 @@ class Screenshots extends Component {
           onFirstClick={this.onFirstClick}
           onLastClick={this.onLastClick}
         />
-        <Split gutter="md">
+        <div id="image-compare">
+          <Split gutter="md">
+            {this.state.elements_left.length !== 0}
+            {
+              <SplitItem>
+                {this.state.elements_left.map((image, index) => (
+                  <img src={image} alt="" key={index} className="image" />
+                ))}
+              </SplitItem>
+            }
+          </Split>
           {this.state.elements_right.length !== 0}
           {
             <SplitItem>
@@ -184,16 +200,8 @@ class Screenshots extends Component {
               ))}
             </SplitItem>
           }
+        </div>
 
-          {this.state.elements_left.length !== 0}
-          {
-            <SplitItem>
-              {this.state.elements_left.map((image, index) => (
-                <img src={image} alt="" key={index} className="image" />
-              ))}
-            </SplitItem>
-          }
-        </Split>
         <Pagination
           itemCount={this.state.itemCount}
           widgetId="pagination-options-menu-bottom"
