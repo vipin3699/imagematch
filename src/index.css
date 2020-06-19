@@ -36,3 +36,9 @@ code {
 .pf-c-divider.mb-4 {
   margin-bottom: var(--pf-global--spacer--xl);
 }
+.pass_fail_other_locale {
+  float: right;
+}
+.pass_fail_EN_locale {
+  float: left;
+}

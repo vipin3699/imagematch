@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Split, SplitItem } from "@patternfly/react-core";
+import { Split, SplitItem, Button } from "@patternfly/react-core";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
+import { Badge } from "@patternfly/react-core";
 class Screenshots extends Component {
   constructor(props) {
     super(props);
@@ -16,6 +17,11 @@ class Screenshots extends Component {
       page: 1,
       perPage: 10,
       showModal: false,
+      pass: 0,
+      fail: 0,
+      pass_other: 0,
+      fail_other: 0,
+      disabled: [],
     };
     this.pagination_for_en = this.pagination_for_en.bind(this);
     this.pagination_for_other = this.pagination_for_other.bind(this);
@@ -99,6 +105,47 @@ class Screenshots extends Component {
       );
     }
   }
+  //Pass fail button for ENG screens
+  passcount = (image) => {
+    // console.log(image);
+    // this.setState({
+    //   pass: this.state.pass + 1,
+    //   clickedpassbutton: image,
+    // });
+    // console.log(id);
+    this.setState((currentState) => ({
+      disabled: [...currentState.disabled, image],
+    }));
+    this.setState({
+      pass: this.state.pass + 1,
+    });
+  };
+  failcount(image) {
+    this.setState((currentState) => ({
+      disabled: [...currentState.disabled, image],
+    }));
+    this.setState({
+      fail: this.state.fail + 1,
+    });
+  }
+
+  //Pass fail button for selected LANG screens
+  passcount_other = (image) => {
+    this.setState((currentState) => ({
+      disabled: [...currentState.disabled, image],
+    }));
+    this.setState({
+      pass_other: this.state.pass_other + 1,
+    });
+  };
+  failcount_other(image) {
+    this.setState((currentState) => ({
+      disabled: [...currentState.disabled, image],
+    }));
+    this.setState({
+      fail_other: this.state.fail_other + 1,
+    });
+  }
   setModalState(showModal) {
     this.setState({
       showModal: showModal,
@@ -129,6 +176,9 @@ class Screenshots extends Component {
   pagination_for_en() {
     return (
       <div>
+        <Badge>Pass: {this.state.pass}</Badge>
+        <Badge>Fail: {this.state.fail}</Badge>
+
         <Pagination
           className="mb-4"
           itemCount={this.state.itemCount}
@@ -146,7 +196,28 @@ class Screenshots extends Component {
 
         <div className="en_screens mb-4">
           {this.state.elements_left.map((image, index) => (
-            <img src={image} alt="" key={index} className="image" />
+            <div>
+              <img src={image} alt="" key={index} className="image" />
+
+              <div>
+                <Button
+                  variant="secondary"
+                  id={image}
+                  onClick={() => this.passcount(image)}
+                  isDisabled={this.state.disabled.includes(image)}
+                >
+                  Pass
+                </Button>
+                <Button
+                  variant="secondary"
+                  id={image}
+                  onClick={() => this.failcount(image)}
+                  isDisabled={this.state.disabled.includes(image)}
+                >
+                  Fail
+                </Button>
+              </div>
+            </div>
           ))}
         </div>
         <Pagination
@@ -162,45 +233,22 @@ class Screenshots extends Component {
           onFirstClick={this.onFirstClick}
           onLastClick={this.onLastClick}
         />
+        <Badge>Pass: {this.state.pass}</Badge>
+        <Badge>Fail: {this.state.fail}</Badge>
       </div>
     );
   }
   pagination_for_other() {
     return (
-      <>
-        <Pagination
-          itemCount={this.state.itemCount}
-          widgetId="pagination-options-menu-bottom"
-          perPage={this.state.perPage}
-          page={this.state.page}
-          variant={PaginationVariant.bottom}
-          onSetPage={this.onSetPage}
-          onPerPageSelect={this.onPerPageSelect}
-          onNextClick={this.onNextClick}
-          onPreviousClick={this.onPreviousClick}
-          onFirstClick={this.onFirstClick}
-          onLastClick={this.onLastClick}
-        />
-        <div id="image-compare">
-          <Split gutter="md">
-            {this.state.elements_left.length !== 0}
-            {
-              <SplitItem>
-                {this.state.elements_left.map((image, index) => (
-                  <img src={image} alt="" key={index} className="image" />
-                ))}
-              </SplitItem>
-            }
-          </Split>
-          {this.state.elements_right.length !== 0}
-          {
-            <SplitItem>
-              {this.state.elements_right.map((image, index) => (
-                <img src={image} alt="" key={index} className="image" />
-              ))}
-            </SplitItem>
-          }
-        </div>
+      <div>
+        <Badge>Pass: {this.state.pass}</Badge>
+        <Badge>Fail: {this.state.fail}</Badge>
+        <Badge className="pass_fail_other_locale">
+          Pass: {this.state.pass_other}
+        </Badge>
+        <Badge className="pass_fail_other_locale">
+          Fail: {this.state.fail_other}
+        </Badge>
 
         <Pagination
           itemCount={this.state.itemCount}
@@ -215,13 +263,95 @@ class Screenshots extends Component {
           onFirstClick={this.onFirstClick}
           onLastClick={this.onLastClick}
         />
-      </>
+        <Split gutter="md">
+          {this.state.elements_left.length !== 0}
+          {
+            <SplitItem id="EN_split">
+              {this.state.elements_left.map((image, index) => (
+                <div>
+                  <img src={image} alt="" key={index} className="image" />
+                  <div>
+                    <Button
+                      variant="secondary"
+                      id={image}
+                      onClick={() => this.passcount(image)}
+                      // disabled={this.state.disabled.includes(image)}
+                      isDisabled={this.state.disabled.includes(image)}
+                    >
+                      Pass
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      id={image}
+                      onClick={() => this.failcount(image)}
+                      isDisabled={this.state.disabled.includes(image)}
+                    >
+                      Fail
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </SplitItem>
+          }
+          {this.state.elements_right.length !== 0}
+          {
+            <SplitItem id="other_split">
+              {this.state.elements_right.map((image, index) => (
+                <div>
+                  <img src={image} alt="" key={index} className="image" />
+                  <div>
+                    <Button
+                      variant="secondary"
+                      id={image}
+                      onClick={() => this.passcount_other(image)}
+                      isDisabled={this.state.disabled.includes(image)}
+                    >
+                      Pass
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      id={image}
+                      onClick={() => this.failcount_other(image)}
+                      isDisabled={this.state.disabled.includes(image)}
+                    >
+                      Fail
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </SplitItem>
+          }
+        </Split>
+        <Pagination
+          itemCount={this.state.itemCount}
+          widgetId="pagination-options-menu-bottom"
+          perPage={this.state.perPage}
+          page={this.state.page}
+          variant={PaginationVariant.bottom}
+          onSetPage={this.onSetPage}
+          onPerPageSelect={this.onPerPageSelect}
+          onNextClick={this.onNextClick}
+          onPreviousClick={this.onPreviousClick}
+          onFirstClick={this.onFirstClick}
+          onLastClick={this.onLastClick}
+        />
+
+        <Badge>Pass: {this.state.pass}</Badge>
+        <Badge>Fail: {this.state.fail}</Badge>
+        <Badge className="pass_fail_other_locale">
+          Pass: {this.state.pass_other}
+        </Badge>
+        <Badge className="pass_fail_other_locale">
+          Fail: {this.state.fail_other}
+        </Badge>
+      </div>
     );
   }
 
   render() {
     if (this.state.screenshots_en.length === 0) {
       //If english locale screenshots are not present for selected version
+
       return <SimpleEmptyState />;
     } else if (this.state.screenshots.length === 0) {
       return <div className="mb-4">{this.pagination_for_en()}</div>;
