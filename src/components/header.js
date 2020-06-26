@@ -3,7 +3,17 @@ import { PageHeader } from "@patternfly/react-core";
 import AppToolbar from "./toolbar";
 class AppHeader extends React.Component {
   render() {
-    return <PageHeader logo={"LingoQA Dashboard"} toolbar={<AppToolbar />} />;
+    const logoProps = {
+      href: "https://github.com/lingostack",
+      target: "_blank",
+    };
+    return (
+      <PageHeader
+        logo={"LingoQA Dashboard"}
+        logoProps={logoProps}
+        toolbar={<AppToolbar />}
+      />
+    );
   }
 }
 
