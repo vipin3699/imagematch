@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import AppPage from "../Page Header/page";
 import { Link } from "react-router-dom";
 import BASE_URL from "../API/BASE_URL";
@@ -17,10 +18,12 @@ import {
 export default function Products() {
   const [products, setProducts] = useState([]);
   useEffect(() => {
-    fetch(`${BASE_URL}/products`)
-      .then((response) => response.json())
-      .then((products) => setProducts(products));
-  });
+    const fetchProductsData = async () => {
+      const ProductsData = await axios(`${BASE_URL}/products`);
+      setProducts(ProductsData.data);
+    };
+    fetchProductsData();
+  }, []);
 
   return (
     <AppPage>
