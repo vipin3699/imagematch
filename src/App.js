@@ -1,26 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import { Route, Switch, BrowserRouter } from "react-router-dom";
+import "@patternfly/react-core/dist/styles/base.css";
+import React from "react";
+import Products from "./Components/Products";
+import Versions from "./Components/Versions";
+function PageLayoutSimpleNav() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/products" component={Products}></Route>
+        <Route
+          path="/products/:productid/screenshots"
+          component={Versions}
+        ></Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
-
-export default App;
+export default PageLayoutSimpleNav;

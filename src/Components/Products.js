@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AppPage from "../Page Header/page";
+import AppPage from "../PageHeader/page";
 import { Link } from "react-router-dom";
 import BASE_URL from "../API/BASE_URL";
 import {
