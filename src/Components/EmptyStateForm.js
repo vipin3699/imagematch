@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useForm , register} from "react-hook-form";
 import SimpleEmptyState from "./SimpleEmptyState";
 import {
   Card,
@@ -16,15 +17,24 @@ export default function EmptyStateFrom(props) {
   const [locales, setlocales] = useState([]);
   const [selectProductsVersion, setselectProductsVersion] = useState("");
   const [selectLocale, setselectLocale] = useState("");
+  const [handleLocaleChange, sethandleLocaleChange] = useState("");
+  const [handleVersionChange, sethandleVersionChange] = useState("");
+  const { register, handleSubmit } = useForm();
 
   function handlelocale(locale) {
     setselectLocale(locale);
-    props.handleLocaleChange(locale);
+  sethandleLocaleChange(locale)
+  setselectLocale(locale)
   }
+
   const handleVerison = (version) => {
     setselectProductsVersion(version);
-    props.handleVersionChange(version);
+    sethandleVersionChange(version)
+    setselectProductsVersion(version)
   };
+  console.log(selectProductsVersion);
+  console.log(selectLocale);
+
   useEffect(() => {
     setProductsVersion(products_version.data);
     setlocales(locales.data);
@@ -36,11 +46,13 @@ export default function EmptyStateFrom(props) {
       <Card>
         <CardBody>
           <SimpleEmptyState />
-          <Form onSubmit={(e) => props.handleFormSubmit(e)}>
+          <Form onSubmit={(Data) => props.handleSubmit(Data)}>
             <FormGroup label="Select Version" fieldId="version">
               <FormSelect
+                // value={selectProductsVersion}
+                ref={register}
                 value={selectProductsVersion}
-                onChange={(version) => handleVerison(version)}
+                onChange={version => handleVerison(version)}
                 aria-label="Version"
                 id="version"
                 name="version"
@@ -56,8 +68,10 @@ export default function EmptyStateFrom(props) {
             </FormGroup>
             <FormGroup label="Select Locale" fieldId="locale">
               <FormSelect
+                // value={selectLocale}
+                ref={register}
                 value={selectLocale}
-                onChange={(locale) => handlelocale(locale)}
+                onChange={locale => handlelocale(locale)}
                 aria-label="Locale"
                 id="locale"
                 name="locale"
@@ -72,7 +86,7 @@ export default function EmptyStateFrom(props) {
               </FormSelect>
             </FormGroup>
             <ActionGroup>
-              <Button variant="primary" type="submit">
+              <Button type="submit" value="Submit" >
                 Submit
               </Button>
             </ActionGroup>

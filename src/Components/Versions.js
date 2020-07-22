@@ -6,14 +6,15 @@ import { PageSection } from "@patternfly/react-core";
 import VersionsToolbar from "./VersionToolbar";
 import EmptyStateForm from "./EmptyStateForm";
 import Screenshots from "./Screenshots";
+import {test} from "./test"
 
 export default function Versions(props) {
   const [products_version, setProductsVersion] = useState([]);
   const [locales, setLocales] = useState([]);
-  const [selectProductsVersion, setselectProductsVersion] = useState([]);
-  const [selectLocales, setselectLocales] = useState([]);
-  const [screenshots, setscreenshots] = useState([]);
-  const [screenshots_en, setscreenshots_en] = useState([]);
+  const [selectProductsVersion, setselectProductsVersion] = useState("");
+  const [selectLocales, setselectLocales] = useState("");
+  const [screenshots, setscreenshots] = useState("");
+  const [screenshots_en, setscreenshots_en] = useState("");
   const [itemCount, setitemCount] = useState("");
   const [elements_right, setelement_right] = useState([]);
   const [elements_left, setelement_left] = useState([]);
@@ -24,82 +25,15 @@ export default function Versions(props) {
   const [previousProductID, setpreviousProductID] = useState(
     props.match.params.productid
   );
-  // function handleDropdownChangeVersion(version) {
-  //   setselectProductsVersion(version, setisProductsVersionSelected(true));
-  // }
-  // function handleDropdownChangeLocale(locale) {
-  //   setselectLocales(locale, setisLocaleSelected(true));
-  // }
-  function setImages(offset, perPage) {
-    if (screenshots_en.length !== 0) {
-      let elements_left = screenshots_en[0].Images.slice(
-        offset,
-        offset + perPage
-      );
-      setelement_left(elements_left);
-    }
-    if (screenshots.length !== 0) {
-      let elements_right = screenshots[0].Images.slice(
-        offset,
-        offset + perPage
-      );
-      setelement_right(elements_right);
-    }
-  }
-  const handleSubmit = () => {
-    // e.preventDefault();
-    // console.log("Clicked");
-    // Screenshots();
-    
-    // console.log(selectProductsVersion);
-    // console.log(selectLocales);
-    // this.fetchall(); 
-    
-    axios.get(`${BASE_URL}/screenshots`, { 
-      params: {
-              product_version_id: selectProductsVersion,
-              locale_id: selectLocales,
-            }
-           })
-      .then(screenshots => {
-        console.log(screenshots);
-        console.log(screenshots.data);
-      })
-      axios.get(`${BASE_URL}/screenshots`, { 
-        params: {
-                product_version_id: selectProductsVersion,
-                locale_id: 3,
-              }
-             })
-        .then(screenshots_en => {
-          console.log(screenshots_en)
-          console.log(screenshots_en.data);
-        })
-    }
-  
-  // useEffect(() => {
-  //   const fetchall = async () => {
-  //     console.log(selectProductsVersion)
-  //     console.log(selectLocales)
-  //     const screenshotsData = await axios(`${BASE_URL}/screenshots`, {
-  //       params: {
-  //         product_version_id: selectProductsVersion,
-  //         locale_id: selectLocales,
-  //       },
-  //     });
-  //     const screenshots_enData = await axios(`${BASE_URL}/screenshots`, {
-  //       params: {
-  //         product_version_id: selectProductsVersion,
-  //         locale_id: 3,
-  //       },
-  //     });
-  //     setscreenshots(screenshotsData.data);
-  //     setscreenshots_en(screenshots_enData.data);
-  //     setitemCount(Math.ceil(screenshots_enData.data[0].Images.length));
-  //   };
-  //   fetchall();
-  // }, []);
 
+  function handleDropdownChangeVersion(version) {
+    setselectProductsVersion(version, setisProductsVersionSelected(true));
+    console.log(selectProductsVersion)
+  }
+  function handleDropdownChangeLocale(locale) {
+    setselectLocales(locale, setisLocaleSelected(true));
+    console.log(locale)
+  }
   useEffect(() => {
     const fetchProductsVersionData = async () => {
       const ProductsVersionData = await axios(
@@ -114,6 +48,36 @@ export default function Versions(props) {
     fetchProductsVersionData();
   }, []);
 
+  function onSubmit(props){
+    const {history} = props;
+    test(props);
+  }
+  // async function Data() {
+//     useEffect(() => {
+//       // async function Data() {
+//     function onSubmit(Data){
+//        console.log(Data)
+//         const screenshotsData =  axios(`${BASE_URL}/screenshots`, {
+//           params: {
+//             product_version_id: selectProductsVersion,
+//             locale_id:  selectLocales
+//           },
+//         })
+//         const screenshots_enData =  axios(`${BASE_URL}/screenshots`, {
+//           params: {
+//             product_version_id: selectProductsVersion,
+//             locale_id: 3,
+//           },
+//         })
+//         setscreenshots(screenshotsData.data);
+//         setscreenshots_en(screenshots_enData.data);
+
+//       // setitemCount(Math.ceil(screenshots_enData.data[0].Images.length));
+//   }
+//   onSubmit();
+// }, []);
+  
+ 
   return (
     <AppPage>
       {/* <PageSection>
@@ -133,11 +97,14 @@ export default function Versions(props) {
         <EmptyStateForm
           products_version={products_version}
           locales={locales}
-          handleVersionChange={(e) =>
-            setselectProductsVersion(e)
+          handleVersionChange={(version) =>
+            setselectProductsVersion(version),
+            console.log((selectProductsVersion))
+            
           }
-          handleLocaleChange={(e) => setselectLocales(e)}
-          handleFormSubmit={() => handleSubmit()}
+          handleLocaleChange={(locale) => setselectLocales(locale),
+          console.log(selectLocales)}
+          handleSubmit={(props) => onSubmit(props)}
         ></EmptyStateForm>
       </PageSection>
     </AppPage>
