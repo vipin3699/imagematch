@@ -24,17 +24,18 @@ export default function EmptyStateFrom(props) {
 
   function handlelocale(locale) {
     setselectLocale(locale);
-    sethandleLocaleChange(locale)
+    props.handleLocaleChange(locale)
     setselectLocale(locale)
   }
+  console.log(selectLocale);
+
 
   function handleVerison(version) {
     setselectProductsVersion(version);
-    sethandleVersionChange(version)
+    props.handleVersionChange(version)
     setselectProductsVersion(version)
   };
   console.log(selectProductsVersion);
-  console.log(selectLocale);
 
   useEffect(() => {
     setProductsVersion(products_version.data);

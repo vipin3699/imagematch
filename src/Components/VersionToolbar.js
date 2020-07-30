@@ -1,5 +1,6 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useForm } from "react-hook-form";
 import {
   DataToolbar,
   DataToolbarContent,
@@ -15,19 +16,23 @@ export default function VersionToolbar(props) {
   const [products_version, setProductsVersion] = useState([]);
   const [locales, setlocales] = useState([]);
   const [selectProductsVersion, setselectProductsVersion] = useState("");
-  const [selectLocale, setselectLocale] = useState("");
-  const [handleLocaleChange, sethandleLocaleChange] = useState("");
-  const [handleVersionChange, sethandleVersionChange] = useState("");
+  const [selectLocales, setselectLocales] = useState("");
+  const { register, handleSubmit } = useForm();
+  const inputRef = useRef(null);
+
+  // const [handleLocaleChange, sethandleLocaleChange] = useState("");
+  // const [handleVersionChange, sethandleVersionChange] = useState("");
 
   function handlelocale(locale) {
-    setselectLocale(locale);
-    sethandleLocaleChange(locale)
-    setselectLocale(locale)
+    setselectLocales(locale);
+    props.handleLocaleChange(locale)
+    setselectLocales(locale)
+    console.log(selectLocales)
   }
 
   function handleVerison(version) {
     setselectProductsVersion(version);
-    sethandleVersionChange(version)
+    props.handleVersionChange(version)
     setselectProductsVersion(version)
   }
 
@@ -35,7 +40,7 @@ export default function VersionToolbar(props) {
     setProductsVersion(products_version.data);
     setlocales(locales.data);
     setselectProductsVersion(props.products_version.id);
-    setselectLocale(props.locales.id);
+    setselectLocales(props.locales.id);
   }, []);
 
   return (
@@ -44,8 +49,8 @@ export default function VersionToolbar(props) {
       id="data-toolbar-group-types"
       className="pf-c-data-toolbar"
     >
-      <Form onSubmit={() => props.handleFormSubmit(selectProductsVersion, selectLocale)}>
-        <FormGroup role="form">
+      <Form onSubmit={() => props.handleSubmit(selectProductsVersion, selectLocales)}>
+        <FormGroup role="form" ref={register}>
           <DataToolbarContent>
             <DataToolbarItem variant="label" id="version">
               Select a Version
@@ -54,16 +59,18 @@ export default function VersionToolbar(props) {
               <FormGroup>
                 <FormSelect
                   value={selectProductsVersion}
-                  onChange={handleVerison}
+                  onChange={(version) => handleVerison(version)}
                   aria-label="Version"
                   id="version"
                   name="version"
+                  ref={inputRef}
                 >
                   {props.products_version.map((option, index) => (
                     <FormSelectOption
                       key={index}
                       value={option.id}
                       label={option.name}
+                      ref={inputRef}
                     />))}
                 </FormSelect>
               </FormGroup>
@@ -72,19 +79,21 @@ export default function VersionToolbar(props) {
               Select a Locale
               </DataToolbarItem>
             <DataToolbarItem>
-              <FormGroup>
+              <FormGroup ref={register}>
                 <FormSelect
-                  value={selectLocale}
-                  onChange={handlelocale}
+                  value={selectLocales}
+                  onChange={(locale) => handlelocale(locale)}
                   aria-label="Locale"
                   id="locale"
                   name="locale"
+                  ref={inputRef}
                 >
                   {props.locales.map((option, index) => (
                     <FormSelectOption
                       key={index}
                       value={option.id}
                       label={option.name}
+                      ref={inputRef}
                     />))}
                 </FormSelect>
               </FormGroup>
