@@ -13,45 +13,65 @@ import {
   Bullseye,
 } from "@patternfly/react-core";
 export default function EmptyStateFrom(props) {
-  const [products_version, setProductsVersion] = useState([]);
-  const [locales, setlocales] = useState([]);
-  const [selectProductsVersion, setselectProductsVersion] = useState("");
-  const [selectLocale, setselectLocale] = useState("");
+  // const [products_version, setProductsVersion] = useState([]);
+  // const [locales, setlocales] = useState([]);
+  // const [selectProductsVersion, setselectProductsVersion] = useState("");
+  // const [selectLocale, setselectLocale] = useState("");
   const [handleLocaleChange, sethandleLocaleChange] = useState("");
   const [handleVersionChange, sethandleVersionChange] = useState("");
   const { register, handleSubmit } = useForm();
   const inputRef = useRef(null);
+  const [product_locale_data, setproduct_locale_data] = useState({
+    products_version: [],
+    locales: [],
+    selectProductsVersion: '',
+    selectLocales: ''
+  })
+  const { locales, products_version, selectProductsVersion, selectLocales } = product_locale_data;
+
 
   function handlelocale(locale) {
-    setselectLocale(locale);
+    setproduct_locale_data({
+      selectLocales: locale
+    });
     props.handleLocaleChange(locale)
-    setselectLocale(locale)
+    // setselectLocale(locale)
   }
-  console.log(selectLocale);
+  console.log(selectLocales);
 
 
   function handleVerison(version) {
-    setselectProductsVersion(version);
+    setproduct_locale_data({
+      selectProductsVersion: version
+    })
     props.handleVersionChange(version)
-    setselectProductsVersion(version)
+    // setselectProductsVersion(version)
   };
   console.log(selectProductsVersion);
 
   useEffect(() => {
-    setProductsVersion(products_version.data);
-    setlocales(locales.data);
-    setselectProductsVersion(props.products_version.id);
-    setselectLocale(props.locales.id);
+    setproduct_locale_data({
+      products_version: products_version.data,
+      locales: locales.data,
+      selectProductsVersion: props.products_version.id,
+      selectLocales: props.locales.id
+    })
+    // setProductsVersion(products_version.data);
+    // setlocales(locales.data);
+    // setselectProductsVersion(props.products_version.id);
+    // setselectLocale(props.locales.id);
   }, []);
   // const onSubmit = props => {
   //   console.log(props);
   // }
+
+
   return (
     <Bullseye>
       <Card>
         <CardBody>
           <SimpleEmptyState />
-          <Form onSubmit={() => props.handleSubmit(selectProductsVersion, selectLocale)}>
+          <Form>
             <FormGroup label="Select Version" fieldId="version" ref={register}>
               <FormSelect
                 value={selectProductsVersion}
@@ -75,7 +95,7 @@ export default function EmptyStateFrom(props) {
             <FormGroup label="Select Locale" fieldId="locale" ref={register}
             >
               <FormSelect
-                value={selectLocale}
+                value={selectLocales}
                 onChange={handlelocale}
                 aria-label="Locale"
                 id="locale"
@@ -92,9 +112,7 @@ export default function EmptyStateFrom(props) {
               </FormSelect>
             </FormGroup>
             <ActionGroup>
-              <Button type="submit" value="Submit" >
-                Submit
-              </Button>
+              <Button type="button" color="primary" onClick={() => props.handleSubmit(selectProductsVersion, selectLocales)}>primary</Button>
             </ActionGroup>
           </Form>
         </CardBody>

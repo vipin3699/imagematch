@@ -99,7 +99,7 @@ export default function VersionToolbar(props) {
               </FormGroup>
             </DataToolbarItem>
             <DataToolbarItem>
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit" value="submit">
                 Submit
                 </Button>
             </DataToolbarItem>
