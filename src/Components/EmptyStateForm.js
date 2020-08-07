@@ -112,7 +112,7 @@ export default function EmptyStateFrom(props) {
               </FormSelect>
             </FormGroup>
             <ActionGroup>
-              <Button type="button" color="primary" onClick={() => props.handleSubmit(selectProductsVersion, selectLocales)}>primary</Button>
+              <Button type="button" onClick={() => props.handleSubmit(selectProductsVersion, selectLocales)}>Submit</Button>
             </ActionGroup>
           </Form>
         </CardBody>
