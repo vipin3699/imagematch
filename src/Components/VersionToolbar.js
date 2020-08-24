@@ -13,34 +13,53 @@ import {
 }
   from "@patternfly/react-core";
 export default function VersionToolbar(props) {
-  const [products_version, setProductsVersion] = useState([]);
-  const [locales, setlocales] = useState([]);
-  const [selectProductsVersion, setselectProductsVersion] = useState("");
-  const [selectLocales, setselectLocales] = useState("");
+  // const [products_version, setProductsVersion] = useState([]);
+  // const [locales, setlocales] = useState([]);
+  // const [selectProductsVersion, setselectProductsVersion] = useState("");
+  // const [selectLocales, setselectLocales] = useState("");
   const { register, handleSubmit } = useForm();
   const inputRef = useRef(null);
+  const [product_locale_data, setproduct_locale_data] = useState({
+    products_version: [],
+    locales: [],
+    selectProductsVersion: '',
+    selectLocales: ''
+  })
+  const { locales, products_version, selectProductsVersion, selectLocales } = product_locale_data;
+
 
   // const [handleLocaleChange, sethandleLocaleChange] = useState("");
   // const [handleVersionChange, sethandleVersionChange] = useState("");
 
-  function handlelocale(locale) {
-    setselectLocales(locale);
-    props.handleLocaleChange(locale)
-    setselectLocales(locale)
+  function handlelocale(e) {
+    // setselectLocales(locale);
+    setproduct_locale_data({
+      selectLocales: e
+    });
+    props.handleLocaleChange(e)
+    // setselectLocales(locale)
     console.log(selectLocales)
   }
 
-  function handleVerison(version) {
-    setselectProductsVersion(version);
-    props.handleVersionChange(version)
-    setselectProductsVersion(version)
+  function handleVerison(e) {
+    // setselectProductsVersion(version);
+    setproduct_locale_data({
+      selectProductsVersion: e
+    })
+    props.handleVersionChange(e)
   }
 
-  useEffect(() => {
-    setProductsVersion(products_version.data);
-    setlocales(locales.data);
-    setselectProductsVersion(props.products_version.id);
-    setselectLocales(props.locales.id);
+  React.useEffect(() => {
+    // setProductsVersion(products_version.data);
+    // setlocales(locales.data);
+    // setselectProductsVersion(props.products_version.id);
+    // setselectLocales(props.locales.id);
+    setproduct_locale_data({
+      products_version: props.products_version,
+      locales: props.locales,
+      selectProductsVersion: props.products_version.id,
+      selectLocales: props.locales.id
+    })
   }, []);
 
   return (
@@ -59,7 +78,7 @@ export default function VersionToolbar(props) {
               <FormGroup>
                 <FormSelect
                   value={selectProductsVersion}
-                  onChange={(version) => handleVerison(version)}
+                  onChange={(e) => handleVerison(e)}
                   aria-label="Version"
                   id="version"
                   name="version"
@@ -82,7 +101,7 @@ export default function VersionToolbar(props) {
               <FormGroup ref={register}>
                 <FormSelect
                   value={selectLocales}
-                  onChange={(locale) => handlelocale(locale)}
+                  onChange={(e) => handlelocale(e)}
                   aria-label="Locale"
                   id="locale"
                   name="locale"

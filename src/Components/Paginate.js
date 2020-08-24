@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Split, SplitItem } from "@patternfly/react-core";
 import { Pagination, PaginationVariant } from "@patternfly/react-core";
 import SimpleEmptyState from "./SimpleEmptyState";
-export default function Paginate() {
+export default function Paginate(props) {
     const [screenshots, setscreenshots] = useState("");
     const [screenshots_en, setscreenshots_en] = useState("");
     const [itemCount, setitemCount] = useState("");
