@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import BASE_URL from "../API/BASE_URL";
 import AppPage from "../PageHeader/page";
@@ -10,51 +10,42 @@ import Breadcrumbs from "../Breadcrumbs/Breadcrumbs";
 import { useHistory } from "react-router";
 
 export default function Versions(props) {
-  const [elements_right, setelement_right] = useState([]);
-  const [elements_left, setelement_left] = useState([]);
-  const [elements, setelements] = useState([]);
-  const [offset, setoffset] = useState(0);
-  const [currentPage, sercurrent_Page] = useState(0);
-  const [page, setpage] = useState(0);
-  const [perPage, setperPage] = useState(10);
-  const [previousProductID] = useState(props.match.params.productid);
+  const [elementsRight, setElementsRight] = useState([]);
+  const [elementsLeft, setElementsLeft] = useState([]);
+  const [elements, setElements] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(10);
   const [onSubmitValue, setonSubmitValue] = useState(false)
-  const [product_locale_data, setproduct_locale_data] = useState({
-    products_version: [],
-    locales: [],
-    selectProductsVersion: '',
-    selectLocales: ''
-  })
-  const { locales, products_version, selectProductsVersion, selectLocales } = product_locale_data;
-
-  const [screenshots, setscreenshots] = useState({
-    screenshots_other: [],
-    screenshots_en: [],
-    itemCount: ''
-  });
-  const { screenshots_other, screenshots_en, itemCount } = screenshots;
-
+  const [productsVersion, setProductsVersion] = useState([]);
+  const [locales, setLocales] = useState([]);
+  const [selectProductsVersion, setSelectProductsVersion] = useState("");
+  const [selectLocales, setSelectLocales] = useState("");
+  const [screenshotsOther, setScreenshotsOther] = useState([]);
+  const [screenshotsEN, setScreenshotsEN] = useState([]);
+  const [itemCount, setItemCount] = useState("");
+  const [itemCountEN, setItemCountEN] = useState("");
+  const [previousProductId] = useState(props.match.params.productid);
   let history = useHistory();
 
-  function handleDropdownChangeVersion(e) {
-    setproduct_locale_data({
-      selectProductsVersion: e
-    })
-    console.log(selectProductsVersion)
+  function handleDropdownChangeVersion(e, event) {
+    event.preventDefault()
+    setSelectProductsVersion(e);
   }
+  console.log(selectProductsVersion)
+
   function handleDropdownChangeLocale(e) {
-    setproduct_locale_data({
-      selectLocales: e
-    })
-    console.log(selectLocales)
+    setSelectLocales(e)
   }
+  console.log(selectLocales)
 
 
   //To get Versions and Locales of selected Product
   React.useEffect(() => {
     const fetchProductsVersionData = async () => {
-      const ProductsVersionData = await axios(
-        `${BASE_URL}/products/${previousProductID}/product_versions`
+      const productsVersionData = await axios(
+        `${BASE_URL}/products/${previousProductId}/product_versions`
       ).catch(e => { console.error(e) });
 
 
@@ -62,13 +53,9 @@ export default function Versions(props) {
 
 
       //Return to Products if no version for selected Product is available
-      if (ProductsVersionData.data.length !== 0) {
-        setproduct_locale_data({
-          products_version: ProductsVersionData.data,
-          locales: LocalesData.data,
-          selectProductsVersion: ProductsVersionData.data[0].id,
-          selectLocales: LocalesData.data[0].id
-        })
+      if (productsVersionData.data.length !== 0) {
+        setProductsVersion(productsVersionData.data);
+        setLocales(LocalesData.data)
       }
       else {
 
@@ -87,7 +74,7 @@ export default function Versions(props) {
   // To get selected Version and Locale to get screenshots
   React.useEffect(() => {
     const FetchScreenshots = async () => {
-
+      setonSubmitValue(false);
       const screenshotsData = await axios(`${BASE_URL}/screenshots`, {
         params: {
           product_version_id: selectProductsVersion,
@@ -96,23 +83,21 @@ export default function Versions(props) {
       })
       console.log(screenshotsData)
 
-      const screenshots_enData = await axios(`${BASE_URL}/screenshots`, {
+      const screenshotsENData = await axios(`${BASE_URL}/screenshots`, {
         params: {
           product_version_id: selectProductsVersion,
           locale_id: 3,
         },
       })
-      console.log(screenshots_enData)
+      console.log(screenshotsENData)
 
-      if (!screenshots_enData.data.length) {
+      if (!screenshotsENData.data.length) {
         alert("The selected Version have no English Screenshots")
       }
       else {
-        setscreenshots({
-          screenshots_other: screenshotsData.data,
-          screenshots_en: screenshots_enData.data,
-          itemCount: Math.ceil(screenshots_enData.data[0].Images.length)
-        })
+        setScreenshotsOther(screenshotsData.data);
+        setScreenshotsEN(screenshotsENData.data);
+        setItemCount(Math.ceil(screenshotsENData.data[0].Images.length))
       }
     }
 
@@ -130,37 +115,35 @@ export default function Versions(props) {
       <AppPage>
         <PageSection variant={PageSectionVariants.light}>
           <Breadcrumbs />
-          {product_locale_data.locales.length && product_locale_data.products_version.length &&
-            ((screenshots.screenshots_other && screenshots.screenshots_other.length != 0) ||
-              (screenshots.screenshots_en && screenshots.screenshots_en.length != 0)) &&
+          {locales && productsVersion &&
+            ((screenshotsOther && screenshotsOther.length != 0) ||
+              (screenshotsEN && screenshotsEN.length != 0)) &&
             (
               <VersionsToolbar
-                selectProductsVersion={
-                  selectProductsVersion
-                }
+                selectProductsVersion={selectProductsVersion}
                 selectLocales={selectLocales}
-                products_version={products_version}
+                productsVersion={productsVersion}
                 locales={locales}
-                handleProductsVersion={handleDropdownChangeVersion}
-                handleLocales={handleDropdownChangeLocale}
-                // handleFormSubmit={(a, b) => onSubmit(a, b)}
-                handleFormSubmit={onSubmit}
-
+                handleVersionChange={(e, event) =>
+                  handleDropdownChangeVersion(e, event)}
+                handleLocaleChange={(e) => handleDropdownChangeLocale(e)}
+                // handleSubmit={(a, b) => onSubmit(a, b)}
+                handleSubmit={onSubmit}
               />
             )}
         </PageSection>
         <PageSection>
-          {(screenshots.screenshots_other && screenshots.screenshots_other.length !== 0) ||
-            (screenshots.screenshots_en && screenshots.screenshots_en.length !== 0) ?
+          {(screenshotsOther && screenshotsOther.length !== 0) ||
+            (screenshotsEN && screenshotsEN.length !== 0) ?
             (
               <div className="form-container">
                 <Paginate
-                  screenshots={screenshots}
-                  screenshots_en={screenshots_en}
+                  screenshotsOther={screenshotsOther}
+                  screenshotsEN={screenshotsEN}
                   itemCount={itemCount}
                   elements={elements}
-                  elements_right={elements_right}
-                  elements_left={elements_left}
+                  elementsRight={elementsRight}
+                  elementsLeft={elementsLeft}
                   offset={offset}
                   currentPage={currentPage}
                   page={page}
@@ -169,21 +152,19 @@ export default function Versions(props) {
               </div>
             ) :
             (
-              product_locale_data.locales.length && product_locale_data.products_version.length &&
+              locales && productsVersion &&
               (
                 <EmptyStateForm
-                  products_version={products_version}
+                  productsVersion={productsVersion}
                   locales={locales}
-                  handleVersionChange={(e) =>
-                    handleDropdownChangeVersion(e)}
+                  handleVersionChange={(e, event) =>
+                    handleDropdownChangeVersion(e, event)}
                   handleLocaleChange={(e) => handleDropdownChangeLocale(e)}
                   // handleSubmit={(a, b) => onSubmit(a, b)}
                   handleSubmit={onSubmit}
                 ></EmptyStateForm>
               ))
           }
-
-
         </PageSection>
       </AppPage >
     </>

@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 import SimpleEmptyState from "./SimpleEmptyState";
 import {
   Card,
@@ -14,58 +13,11 @@ import {
   Divider,
 } from "@patternfly/react-core";
 export default function EmptyStateFrom(props) {
-  // const [handleLocaleChange, sethandleLocaleChange] = useState("");
-  // const [handleVersionChange, sethandleVersionChange] = useState("");
-  const { register, handleSubmit } = useForm();
-  const inputRef = useRef(null);
-  const [product_locale_data, setproduct_locale_data] = useState({
-    products_version: [],
-    locales: [],
-    selectProductsVersion: '',
-    selectLocales: ''
-  })
-  const { locales, products_version, selectProductsVersion, selectLocales } = product_locale_data;
 
-  // const [products_version, setProductsVersion] = useState([]);
-  // const [locales, setlocales] = useState([]);
-  // const [selectProductsVersion, setselectProductsVersion] = useState("");
-  // const [selectLocales, setselectLocales] = useState("");
-  function handlelocale(e) {
-    setproduct_locale_data({
-      selectLocales: e
-    });
-    // setselectLocales(e)
-    props.handleLocaleChange(e)
-  }
-  console.log(selectLocales);
-
-
-  function handleVersion(e) {
-    setproduct_locale_data({
-      selectProductsVersion: e
-    })
-    // setselectProductsVersion(e)
-    props.handleVersionChange(e)
-  };
-  console.log(selectProductsVersion);
-
-  React.useEffect(() => {
-    setproduct_locale_data({
-      products_version: props.products_version,
-      locales: props.locales,
-      selectProductsVersion: props.products_version.id,
-      selectLocales: props.locales.id
-    })
-    // setProductsVersion(products_version.data);
-    // setlocales(locales.data);
-    // setselectProductsVersion(props.products_version.id);
-    // setselectLocales(props.locales.id);
-
-
-
-  }
-    , []);
-
+  const [productsVersion, setProductsVersion] = useState([]);
+  const [locales, setLocales] = useState([]);
+  const [selectProductsVersion, setSelectProductsVersion] = useState("");
+  const [selectLocales, setSelectLocales] = useState("");
   return (
     <Bullseye>
       <Card>
@@ -73,20 +25,20 @@ export default function EmptyStateFrom(props) {
           <SimpleEmptyState />
           <Divider className="mb-4" />
           <Form>
-            <FormGroup label="Select Version" fieldId="version" ref={register}>
+            <FormGroup label="Select Version" fieldId="version">
               <FormSelect
                 value={selectProductsVersion}
-                // onChange={handleVerison}
-                onChange={(e) => handleVersion(e)}
+                onChange={(e, event) => (
+                  props.handleVersionChange(e, event),
+                  setSelectProductsVersion(e))}
                 aria-label="Version"
                 id="version"
                 name="version"
-                ref={inputRef}
               >
+
                 <option>Select</option>
-                {props.products_version.map((option, index) => (
+                {props.productsVersion.map((option, index) => (
                   <FormSelectOption
-                    ref={inputRef}
                     key={index}
                     value={option.id}
                     label={option.name}
@@ -94,12 +46,11 @@ export default function EmptyStateFrom(props) {
                 ))}
               </FormSelect>
             </FormGroup>
-            <FormGroup label="Select Locale" fieldId="locale" ref={register}
-            >
+            <FormGroup label="Select Locale" fieldId="locale">
               <FormSelect
                 value={selectLocales}
-                // onChange={handlelocale}
-                onChange={(e) => handlelocale(e)}
+                onChange={e => (props.handleLocaleChange(e),
+                  setSelectLocales(e))}
                 aria-label="Locale"
                 id="locale"
                 name="locale"
@@ -120,6 +71,6 @@ export default function EmptyStateFrom(props) {
           </Form>
         </CardBody>
       </Card>
-    </Bullseye>
+    </Bullseye >
   );
 }
