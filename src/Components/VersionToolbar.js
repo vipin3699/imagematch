@@ -9,20 +9,16 @@ import {
   FormSelect,
   FormSelectOption,
   FormGroup,
-  ActionGroup
 } from "@patternfly/react-core";
 export default function VersionToolbar(props) {
-  const [productsVersion, setProductsVersion] = useState([]);
-  const [locales, setLocales] = useState([]);
   const [selectProductsVersion, setSelectProductsVersion] = useState("");
   const [selectLocales, setSelectLocales] = useState("");
+
   return (
     <DataToolbar
       variant="label"
       id="data-toolbar-group-types"
-      className="pf-c-data-toolbar"
-    >
-      {/* <Form onSubmit={() => props.handleSubmit(selectProductsVersion, selectLocales)}> */}
+      className="pf-c-data-toolbar">
       <Form>
         <FormGroup role="form">
           <DataToolbarContent>
@@ -33,13 +29,10 @@ export default function VersionToolbar(props) {
               <FormGroup>
                 <FormSelect
                   value={props.selectProductsVersion}
-                  onChange={(e, event) => (
-                    props.handleVersionChange(e, event),
-                    setSelectProductsVersion(e))}
+                  onChange={(e, event) => (props.handleVersionChange(e, event), setSelectProductsVersion(e))}
                   aria-label="Version"
                   id="version"
-                  name="version"
-                >
+                  name="version" >
                   <option>Select</option>
                   {props.productsVersion.map((option, index) => (
                     <FormSelectOption
@@ -57,12 +50,10 @@ export default function VersionToolbar(props) {
               <FormGroup>
                 <FormSelect
                   value={props.selectLocales}
-                  onChange={e => (props.handleLocaleChange(e),
-                    setSelectLocales(e))}
+                  onChange={e => (props.handleLocaleChange(e), setSelectLocales(e))}
                   aria-label="Locale"
                   id="locale"
-                  name="locale"
-                >
+                  name="locale">
                   <option>Select</option>
                   {props.locales.map((option, index) => (
                     <FormSelectOption
@@ -74,14 +65,11 @@ export default function VersionToolbar(props) {
               </FormGroup>
             </DataToolbarItem>
             <DataToolbarItem>
-              <ActionGroup>
-                <Button type="button" onClick={() => props.handleSubmit(selectProductsVersion, selectLocales)}>Submit</Button>
-              </ActionGroup>
+              <Button type="button" onClick={() => props.handleSubmit(selectProductsVersion, selectLocales)}>Submit</Button>
             </DataToolbarItem>
           </DataToolbarContent>
         </FormGroup>
       </Form>
     </DataToolbar>
-
   )
 }

@@ -3,7 +3,8 @@ import "@patternfly/react-core/dist/styles/base.css";
 import React from "react";
 import Products from "./Components/Products";
 import Versions from "./Components/Versions";
-function PageLayoutSimpleNav() {
+
+export default function PageLayoutSimpleNav() {
   return (
     <BrowserRouter>
       <Switch>
@@ -16,4 +17,3 @@ function PageLayoutSimpleNav() {
     </BrowserRouter>
   );
 }
-export default PageLayoutSimpleNav;

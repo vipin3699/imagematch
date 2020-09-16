@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import AppPage from "../PageHeader/page";
 import { Link } from "react-router-dom";
 import BASE_URL from "../API/BASE_URL";
+import axios from "axios";
 import {
   CardBody,
   Card,
@@ -17,7 +17,7 @@ import {
 
 export default function Products() {
   const [products, setProducts] = useState([]);
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchProductsData = async () => {
       const ProductsData = await axios(`${BASE_URL}/products`);
       setProducts(ProductsData.data);
@@ -38,8 +38,7 @@ export default function Products() {
                     <TextContent>
                       <Text
                         className="product-title"
-                        component={TextVariants.h4}
-                      >
+                        component={TextVariants.h4}>
                         {product.name}
                       </Text>
                     </TextContent>

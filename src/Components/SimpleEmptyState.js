@@ -8,7 +8,7 @@ import {
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 
-function SimpleEmptyState() {
+export default function SimpleEmptyState() {
   return (
     <EmptyState variant={EmptyStateVariant.full}>
       <EmptyStateIcon icon={CubesIcon} />
@@ -21,4 +21,3 @@ function SimpleEmptyState() {
     </EmptyState>
   );
 }
-export default SimpleEmptyState;
