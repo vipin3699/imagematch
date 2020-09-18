@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AppPage from "../PageHeader/page";
+import Apppage from "../PageHeader/Apppage";
 import { Link } from "react-router-dom";
 import BASE_URL from "../API/BASE_URL";
 import axios from "axios";
@@ -26,7 +26,7 @@ export default function Products() {
   }, []);
 
   return (
-    <AppPage>
+    <Apppage>
       <PageSection>
         <Grid gutter="lg" sm={6} md={3}>
           {products.map((product) => {
@@ -50,6 +50,6 @@ export default function Products() {
           })}
         </Grid>
       </PageSection>
-    </AppPage>
+    </Apppage>
   );
 }

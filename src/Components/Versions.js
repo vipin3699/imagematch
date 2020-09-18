@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 import BASE_URL from "../API/BASE_URL";
-import AppPage from "../PageHeader/page";
-import VersionsToolbar from "./VersionToolbar";
-import EmptyStateForm from "./EmptyStateForm";
+import DropdownData from "./DropdownData";
+import Apppage from "../PageHeader/Apppage";
 import Paginate from "./Paginate"
 import Breadcrumbs from "../Breadcrumbs/Breadcrumbs";
 import { useHistory } from "react-router";
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import SimpleEmptyState from "./SimpleEmptyState";
+import { PageSection, PageSectionVariants, Bullseye, DataToolbar, Divider, Card, CardBody, DataToolbarItem } from "@patternfly/react-core";
 
 export default function Versions(props) {
   const [elementsRight, setElementsRight] = useState([]);
@@ -95,23 +95,30 @@ export default function Versions(props) {
   }
 
   return (
-    <AppPage>
+    <Apppage>
       <PageSection variant={PageSectionVariants.light}>
         <Breadcrumbs />
         {locales && productsVersion &&
           ((screenshotsOther && screenshotsOther.length !== 0) ||
             (screenshotsEN && screenshotsEN.length !== 0)) &&
           (
-            <VersionsToolbar
-              selectProductsVersion={selectProductsVersion}
-              selectLocales={selectLocales}
-              productsVersion={productsVersion}
-              locales={locales}
-              handleVersionChange={(e, event) =>
-                handleDropdownChangeVersion(e, event)}
-              handleLocaleChange={(e) => handleDropdownChangeLocale(e)}
-              handleSubmit={onSubmit}
-            />
+            <DataToolbar
+              variant="label"
+              id="data-toolbar-group-types"
+              className="pf-c-data-toolbar">
+              <DataToolbarItem>
+                <DropdownData
+                  selectProductsVersion={selectProductsVersion}
+                  selectLocales={selectLocales}
+                  productsVersion={productsVersion}
+                  locales={locales}
+                  handleVersionChange={(e, event) =>
+                    handleDropdownChangeVersion(e, event)}
+                  handleLocaleChange={(e) => handleDropdownChangeLocale(e)}
+                  handleSubmit={onSubmit}
+                />
+              </DataToolbarItem>
+            </DataToolbar>
           )}
       </PageSection>
       <PageSection>
@@ -136,17 +143,25 @@ export default function Versions(props) {
           (
             locales && productsVersion &&
             (
-              <EmptyStateForm
-                productsVersion={productsVersion}
-                locales={locales}
-                handleVersionChange={(e, event) =>
-                  handleDropdownChangeVersion(e, event)}
-                handleLocaleChange={(e) => handleDropdownChangeLocale(e)}
-                handleSubmit={onSubmit}
-              ></EmptyStateForm>
+              <Bullseye>
+                <Card>
+                  <CardBody>
+                    <SimpleEmptyState />
+                    <Divider className="mb-4" />
+                    <DropdownData
+                      productsVersion={productsVersion}
+                      locales={locales}
+                      handleVersionChange={(e, event) =>
+                        handleDropdownChangeVersion(e, event)}
+                      handleLocaleChange={(e) => handleDropdownChangeLocale(e)}
+                      handleSubmit={onSubmit}
+                    />
+                  </CardBody>
+                </Card>
+              </Bullseye>
             ))
         }
       </PageSection>
-    </AppPage >
+    </Apppage >
   );
 }
