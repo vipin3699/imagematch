@@ -7,7 +7,7 @@ export default function Breadcrumbs() {
         <nav className="pf-c-breadcrumb" aria-label="breadcrumb">
             <ol className="pf-c-breadcrumb__list">
                 <li className="pf-c-breadcrumb__item">
-                    <Link to="/products" className="pf-c-breadcrumb__link">Products</Link>
+                    <Link to="/" className="pf-c-breadcrumb__link">Products</Link>
                     <span className="pf-c-breadcrumb__item-divider">
                         <AngleRightIcon />
                     </span>

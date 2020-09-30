@@ -8,7 +8,7 @@ import {
   Button,
 } from "@patternfly/react-core";
 
-export default function DropdownData(props) {
+export default function SimpleDropdown(props) {
   const [selectProductsVersion, setSelectProductsVersion] = useState("");
   const [selectLocales, setSelectLocales] = useState("");
   return (

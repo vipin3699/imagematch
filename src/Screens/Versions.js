@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import BASE_URL from "../API/BASE_URL";
-import DropdownData from "./DropdownData";
-import Apppage from "../PageHeader/Apppage";
-import Paginate from "./Paginate"
-import Breadcrumbs from "../Breadcrumbs/Breadcrumbs";
+import SimpleDropdown from "../Components/SimpleDropdown";
+import Paginate from "../Components/Paginate"
+import Breadcrumbs from "../Components/Breadcrumbs";
 import { useHistory } from "react-router";
-import SimpleEmptyState from "./SimpleEmptyState";
+import SimpleEmptyState from "../Components/SimpleEmptyState";
+import constant from "../Constants/EnglishScreens.json"
 import { PageSection, PageSectionVariants, Bullseye, DataToolbar, Divider, Card, CardBody, DataToolbarItem } from "@patternfly/react-core";
 
 export default function Versions(props) {
@@ -53,7 +53,7 @@ export default function Versions(props) {
       else {
         alert(" No Versions available for selected Product. Please select other Product");
         history.push({
-          pathname: "/products"
+          pathname: "/"
         })
       }
     };
@@ -73,7 +73,7 @@ export default function Versions(props) {
       const screenshotsENData = await axios(`${BASE_URL}/screenshots`, {
         params: {
           product_version_id: selectProductsVersion,
-          locale_id: 3,
+          locale_id: constant.englishLocaleId,
         },
       })
 
@@ -83,7 +83,7 @@ export default function Versions(props) {
       else {
         setScreenshotsOther(screenshotsData.data);
         setScreenshotsEN(screenshotsENData.data);
-        setItemCount(Math.ceil(screenshotsENData.data[0].Images.length))
+        setItemCount(Math.ceil(screenshotsENData.data[0].images.length))
       }
     }
     FetchScreenshots();
@@ -95,7 +95,7 @@ export default function Versions(props) {
   }
 
   return (
-    <Apppage>
+    <div>
       <PageSection variant={PageSectionVariants.light}>
         <Breadcrumbs />
         {locales && productsVersion &&
@@ -107,7 +107,7 @@ export default function Versions(props) {
               id="data-toolbar-group-types"
               className="pf-c-data-toolbar">
               <DataToolbarItem>
-                <DropdownData
+                <SimpleDropdown
                   selectProductsVersion={selectProductsVersion}
                   selectLocales={selectLocales}
                   productsVersion={productsVersion}
@@ -148,7 +148,7 @@ export default function Versions(props) {
                   <CardBody>
                     <SimpleEmptyState />
                     <Divider className="mb-4" />
-                    <DropdownData
+                    <SimpleDropdown
                       productsVersion={productsVersion}
                       locales={locales}
                       handleVersionChange={(e, event) =>
@@ -162,6 +162,6 @@ export default function Versions(props) {
             ))
         }
       </PageSection>
-    </Apppage >
+    </div>
   );
 }
