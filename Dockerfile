@@ -8,6 +8,7 @@ Run yum -y update && \
 
 WORKDIR imagematch
 
+EXPOSE 8080
 RUN npm i
 
 
